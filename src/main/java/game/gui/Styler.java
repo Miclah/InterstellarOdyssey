@@ -1,5 +1,6 @@
 package game.gui;
 
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -22,6 +23,7 @@ public class Styler {
         VBox vbox = new VBox(20);
         vbox.setAlignment(Pos.CENTER);
         vbox.getChildren().addAll(buttons);
+        vbox.setPadding(new Insets(20));
         return vbox;
     }
 
