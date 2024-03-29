@@ -1,27 +1,36 @@
 package game.gui;
 
+import javafx.animation.FadeTransition;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.TextAlignment;
+import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.ScrollPane.ScrollBarPolicy;
 import javafx.scene.text.Text;
+import javafx.util.Duration;
 
 import java.util.ArrayList;
 
 public class Menu {
     private Stage primaryStage;
+    private boolean transitionPlayed;
     private Scene mainMenuScene;
     private Scene optionsScene;
     private Scene aboutScene;
+    private Scene settingsScene;
     private Game gameScene;
     private final String PATH_TO_CSS = "/Styles/Menu/menu.css";
 
     public Menu(Stage primaryStage) {
         this.primaryStage = primaryStage;
         this.displayMain();
+        this.transitionPlayed = true;
     }
 
     private void displayMain() {
@@ -38,7 +47,15 @@ public class Menu {
         buttons.get(2).setOnAction(e -> this.primaryStage.close());
 
         VBox vBox = Styler.createVBox(buttons);
+        vBox.setAlignment(Pos.CENTER);
         this.mainMenuScene = Styler.createRoot(vBox, this.PATH_TO_CSS);
+        if (!this.transitionPlayed) {
+            FadeTransition fadeIn = new FadeTransition(Duration.seconds(2), vBox);
+            fadeIn.setFromValue(0.25);
+            fadeIn.setToValue(1);
+            fadeIn.play();
+            transitionPlayed = true;
+        }
 
         this.primaryStage.setTitle("Interstellar Odyssey");
         this.primaryStage.setScene(this.mainMenuScene);
@@ -54,10 +71,12 @@ public class Menu {
         names.add("Back");
         ArrayList<Button> buttons = Styler.createButtons(names);
 
+        buttons.get(0).setOnAction(e -> this.displaySettings());
         buttons.get(1).setOnAction(e -> this.displayAbout());
         buttons.get(2).setOnAction(e -> this.primaryStage.setScene(this.mainMenuScene));
 
         VBox vBox = Styler.createVBox(buttons);
+        vBox.setAlignment(Pos.CENTER);
         this.optionsScene = Styler.createRoot(vBox, this.PATH_TO_CSS);
         this.primaryStage.setScene(this.optionsScene);
     }
@@ -68,44 +87,76 @@ public class Menu {
         ArrayList<Button> back = Styler.createButtons(name);
         back.get(0).setOnAction(e -> this.primaryStage.setScene(this.optionsScene));
 
-        VBox vBox = Styler.createVBox(back);
+        VBox vBox = new VBox();
+        vBox.setAlignment(Pos.TOP_CENTER);
+        vBox.setSpacing(10);
+        vBox.setPadding(new Insets(20));
 
-        Text aboutText = new Text();
-        aboutText.setText("Dynamic Duel\n\n" +
-                "Game Overview:\n" +
-                "Dynamic Duel is a tactical 2D card game made for two players. The goal is to lower your opponent's health using various cards, each with its own special abilities.\n\n" +
-                "Game Elements:\n" +
-                "- Health Cards: At the start, each player gets 100 health points.\n" +
-                "- Attack Cards: These cards take away health points from your opponent.\n" +
-                "- Defense Cards: Use these cards to block or reduce damage from your opponent.\n" +
-                "- Special Cards: Rare and powerful, these cards can change the game. They can do things like skip a turn or let you draw extra cards.\n" +
-                "- Draw Rule: Players can only draw one card per turn, so choose wisely!\n" +
-                "- Hand Limit: You can have a maximum of 5 cards in your hand at the end of each turn.\n" +
-                "- Special Player and AI Cards: Besides regular special cards, players and the computer have unique cards that can change the game. For example, a special player card might save you from losing by restoring 10 health and letting you draw another card.\n\n" +
-                "Game Rules:\n" +
-                "Players start with 5 cards and draw one card at the beginning of each turn.\n" +
-                "During your turn, you can play one card—Attack, Defense, or Special.\n" +
-                "If you play an Attack card, your opponent loses health equal to the card's attack value. If he does not block it by playing a defense card.\n" +
-                "Defense cards help you block or reduce damage from your opponent's attack.\n" +
-                "Special cards add strategic twists and excitement to the game.\n" +
-                "The game goes on until one player's health drops to zero, making the other player the winner.\n\n" +
-                "Author: " + "\n" +
-                "Version: ");
+        TextFlow textFlow = new TextFlow();
+        textFlow.setTextAlignment(TextAlignment.LEFT);
+        textFlow.setPrefWidth(725);
 
-        // Set text properties (wrap width, styles)
-        aboutText.setWrappingWidth(725);
-        aboutText.setStyle("-fx-fill: #fff; -fx-font-size: 18; -fx-padding: 20; -fx-text-alignment: justify;");
+        Text gameTitle = new Text("Interstellar Odyssey\n");
+        gameTitle.setStyle("-fx-font-size: 36; -fx-font-weight: bold; -fx-fill: #fff; -fx-font-family: 'Arial Black';");
+        gameTitle.setTextAlignment(TextAlignment.CENTER);
+        textFlow.getChildren().add(gameTitle);
 
-        ScrollPane scrollPane = new ScrollPane(aboutText);
+        Text gameOverviewTitle = new Text("Game Overview:\n");
+        gameOverviewTitle.setStyle("-fx-font-weight: bold; -fx-font-size: 20; -fx-fill: #fff;");
+
+        Text gameOverviewText = new Text("Embark on an epic journey through the cosmos in Interstellar Odyssey, a thrilling space exploration game where the universe is your playground. Begin your adventure on Earth, customize your character, and dive into a rich backstory that sets the stage for your intergalactic voyage.\n\n");
+        gameOverviewText.setStyle("-fx-font-size: 20; -fx-fill: #fff;");
+
+        Text gameElementsTitle = new Text("Game Elements:\n");
+        gameElementsTitle.setStyle("-fx-font-weight: bold; -fx-font-size: 20; -fx-fill: #fff;");
+
+        Text gameElementsText = new Text("Character Customization: Personalize your avatar's appearance and backstory, making your mark on the vast expanse of space.\n" +
+                "Upgrades and Items: Utilize coins to purchase upgrades and essential items, including your very own spaceship, to enhance your exploration capabilities.\n" +
+                "Exploration: Navigate an automatically generated universe, filled with diverse solar systems and uncharted worlds waiting to be discovered.\n" +
+                "Resource Mining: Venture to planets and mine valuable resources, establishing outposts to expand your reach and influence.\n" +
+                "Ship Upgrades: Enhance your spaceship with various upgrades, from improved speed and fuel efficiency to advanced weaponry and defensive systems.\n" +
+                "Inventory Management: Manage your inventory, storing essential items like teleporters and outposts to aid you on your journey.\n\n");
+        gameElementsText.setStyle("-fx-font-size: 20; -fx-fill: #fff;");
+
+        Text gameRulesTitle = new Text("Game Rules:\n");
+        gameRulesTitle.setStyle("-fx-font-weight: bold; -fx-font-size: 20; -fx-fill: #fff;");
+
+        Text gameRulesText = new Text("Return to Earth: Return to Earth to purchase upgrades and replenish your supplies, ensuring you're prepared for the challenges ahead.\n" +
+                "Sandbox Experience: Immerse yourself in a sandbox environment, where the possibilities are limitless and your destiny is yours to shape.\n" +
+                "Future Additions: Stay tuned for future updates, where we may introduce new challenges and adversaries to test your skills in the depths of space.\n\n");
+        gameRulesText.setStyle("-fx-font-size: 20; -fx-fill: #fff;");
+
+        Text gameAuthorTitle = new Text("Author:\n");
+        gameAuthorTitle.setStyle("-fx-font-weight: bold; -fx-font-size: 20; -fx-fill: #fff;");
+        Text gameAuthorText = new Text("New Frontriers\n\n");
+        gameAuthorText.setStyle("-fx-font-size: 20; -fx-fill: #fff;");
+
+        Text gameVersionTitle = new Text("Version:\n");
+        gameVersionTitle.setStyle("-fx-font-weight: bold; -fx-font-size: 20; -fx-fill: #fff;");
+        Text gameVersionText = new Text("0.1");
+        gameVersionText.setStyle("-fx-font-size: 20; -fx-fill: #fff;");
+
+        textFlow.getChildren().addAll(gameOverviewTitle, gameOverviewText, gameElementsTitle, gameElementsText, gameRulesTitle, gameRulesText, gameAuthorTitle, gameAuthorText, gameVersionTitle, gameVersionText);
+
+        ScrollPane scrollPane = new ScrollPane(textFlow);
         scrollPane.setHbarPolicy(ScrollBarPolicy.NEVER);
         scrollPane.setVbarPolicy(ScrollBarPolicy.AS_NEEDED);
-        scrollPane.setStyle("-fx-background: #2c3e50; -fx-background-color: #2c3e50;");
 
-        vBox.getChildren().add(scrollPane);
+        vBox.getChildren().addAll(scrollPane, back.get(0));
 
         this.aboutScene = Styler.createRoot(vBox, this.PATH_TO_CSS);
         this.primaryStage.setScene(this.aboutScene);
     }
 
+    private void displaySettings() {
+        ArrayList<Button> back = new ArrayList<>();
+        back.add(new Button("Back"));
+
+        back.getLast().setOnAction(e -> this.primaryStage.setScene(this.optionsScene));
+        VBox vBox = Styler.createVBox(back);
+        vBox.setAlignment(Pos.CENTER);
+        this.settingsScene = Styler.createRoot(vBox, this.PATH_TO_CSS);
+        this.primaryStage.setScene(this.settingsScene);
+    }
 }
 
