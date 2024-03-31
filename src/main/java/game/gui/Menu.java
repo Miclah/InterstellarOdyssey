@@ -1,5 +1,6 @@
 package game.gui;
 
+import game.util.Styler;
 import javafx.animation.FadeTransition;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -24,7 +25,6 @@ public class Menu {
     private Scene optionsScene;
     private Scene aboutScene;
     private Scene settingsScene;
-    private Game gameScene;
     private final String PATH_TO_CSS = "/Styles/Menu/menu.css";
 
     public Menu(Stage primaryStage) {
@@ -43,25 +43,25 @@ public class Menu {
         names.add("Exit");
         ArrayList<Button> buttons = Styler.createButtons(names);
 
+        buttons.get(0).setOnAction(e -> new Customizator(this.primaryStage, this.mainMenuScene));
         buttons.get(1).setOnAction(e -> this.displayOptions());
         buttons.get(2).setOnAction(e -> this.primaryStage.close());
 
         VBox vBox = Styler.createVBox(buttons);
         vBox.setAlignment(Pos.CENTER);
         this.mainMenuScene = Styler.createRoot(vBox, this.PATH_TO_CSS);
+
+        this.primaryStage.setResizable(false);
+        this.primaryStage.setOnCloseRequest(e -> this.primaryStage.close());
+        Styler.setStage(this.primaryStage, this.mainMenuScene);
+
         if (!this.transitionPlayed) {
-            FadeTransition fadeIn = new FadeTransition(Duration.seconds(2), vBox);
+            FadeTransition fadeIn = new FadeTransition(Duration.seconds(3), primaryStage.getScene().getRoot());
             fadeIn.setFromValue(0.25);
             fadeIn.setToValue(1);
             fadeIn.play();
             transitionPlayed = true;
         }
-
-        this.primaryStage.setTitle("Interstellar Odyssey");
-        this.primaryStage.setScene(this.mainMenuScene);
-        this.primaryStage.setResizable(false);
-        this.primaryStage.setOnCloseRequest(e -> this.primaryStage.close());
-        this.primaryStage.show();
     }
 
     private void displayOptions() {
