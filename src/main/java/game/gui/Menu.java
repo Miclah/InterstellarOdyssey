@@ -49,7 +49,7 @@ public class Menu {
 
         VBox vBox = Styler.createVBox(buttons);
         vBox.setAlignment(Pos.CENTER);
-        this.mainMenuScene = Styler.createRoot(vBox, this.PATH_TO_CSS);
+        this.mainMenuScene = Styler.createScene(vBox, this.PATH_TO_CSS, true);
 
         this.primaryStage.setResizable(false);
         this.primaryStage.setOnCloseRequest(e -> this.primaryStage.close());
@@ -77,7 +77,7 @@ public class Menu {
 
         VBox vBox = Styler.createVBox(buttons);
         vBox.setAlignment(Pos.CENTER);
-        this.optionsScene = Styler.createRoot(vBox, this.PATH_TO_CSS);
+        this.optionsScene = Styler.createScene(vBox, this.PATH_TO_CSS, true);
         this.primaryStage.setScene(this.optionsScene);
     }
 
@@ -144,7 +144,7 @@ public class Menu {
 
         vBox.getChildren().addAll(scrollPane, back.get(0));
 
-        this.aboutScene = Styler.createRoot(vBox, this.PATH_TO_CSS);
+        this.aboutScene = Styler.createScene(vBox, this.PATH_TO_CSS, true);
         this.primaryStage.setScene(this.aboutScene);
     }
 
@@ -155,7 +155,7 @@ public class Menu {
         back.getLast().setOnAction(e -> this.primaryStage.setScene(this.optionsScene));
         VBox vBox = Styler.createVBox(back);
         vBox.setAlignment(Pos.CENTER);
-        this.settingsScene = Styler.createRoot(vBox, this.PATH_TO_CSS);
+        this.settingsScene = Styler.createScene(vBox, this.PATH_TO_CSS, true);
         this.primaryStage.setScene(this.settingsScene);
     }
 }
