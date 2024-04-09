@@ -37,6 +37,7 @@ public class Styler {
 
     public static Scene createScene(VBox vBox, String cssFile, boolean isMenu) {
         if (!isMenu) {
+            vBox.setAlignment(Pos.CENTER);
             BorderPane root = new BorderPane();
             root.getStylesheets().add(Objects.requireNonNull(Styler.class.getResource(cssFile)).toExternalForm());
             root.setCenter(vBox);
