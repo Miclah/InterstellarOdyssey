@@ -1,6 +1,8 @@
 package game.gui;
 
 import game.util.Styler;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -23,10 +25,13 @@ public class Customizator {
     private int traitPoints = 15;
     private final String PATH_TO_CSS = "/Styles/Menu/customizer.css";
     private List<Slider> sliders = new ArrayList<>();
+    private Label traitPointsLeft;
+    private ChangeListener<Number> traitSliderListener;
 
     public Customizator(Stage primaryStage, Scene mainMenuScene) {
         this.primaryStage = primaryStage;
         this.skinSelector(mainMenuScene);
+        this.traitSliderListener = this.createTraitSliderListener();
     }
 
     private void skinSelector(Scene mainMenuScene) {
@@ -145,32 +150,29 @@ public class Customizator {
 
         checkBoxes.forEach(checkBox -> checkBox.selectedProperty().addListener((obs, wasPreviouslySelected, isNowSelected) -> {
             if (isNowSelected) {
+                checkBoxes.stream().filter(cb -> !cb.equals(checkBox)).forEach(cb -> cb.setSelected(false));
+                this.sliders.forEach(slider -> slider.valueProperty().removeListener(this.traitSliderListener));
                 if (originalSliderValues.isEmpty()) {
-                    for (Slider slider : this.sliders) {
-                        originalSliderValues.add(slider.getValue());
-                    }
+                    this.sliders.forEach(slider -> originalSliderValues.add(slider.getValue()));
                 }
                 checkBoxActions.get(checkBox).accept(this.sliders);
-
-                checkBoxes.forEach(otherCheckBox -> {
-                    if (otherCheckBox != checkBox) {
-                        otherCheckBox.setSelected(false);
-                    }
-                });
+                this.sliders.forEach(slider -> slider.valueProperty().addListener(this.traitSliderListener));
             } else {
-                if (!originalSliderValues.isEmpty()) {
-                    for (int i = 0; i < this.sliders.size(); i++) {
-                        this.sliders.get(i).setValue(originalSliderValues.get(i));
-                    }
-                    originalSliderValues.clear(); 
+                for (int i = 0; i < this.sliders.size(); i++) {
+                    Slider slider = this.sliders.get(i);
+                    slider.valueProperty().removeListener(this.traitSliderListener);
+                    slider.setValue(originalSliderValues.get(i));
+                    slider.valueProperty().addListener(this.traitSliderListener);
                 }
+                originalSliderValues.clear();
             }
         }));
 
+
         Label traitsLabel = Styler.createHeaderLabel("Character Traits:", "");
         Label pointsLeftLabel = Styler.createHeaderLabel("Trait points left: ", "");
-        Label traitPointsLeft = new Label(String.valueOf(this.traitPoints));
-        HBox traitPointsBox = new HBox(pointsLeftLabel, traitPointsLeft);
+        this.traitPointsLeft = new Label(String.valueOf(this.traitPoints));
+        HBox traitPointsBox = new HBox(pointsLeftLabel, this.traitPointsLeft);
         traitPointsBox.setAlignment(Pos.CENTER);
 
         VBox traitsBox = this.createTraitsBox(Arrays.asList("Intelligence", "Charisma", "Agility", "Luck", "Strength"), Arrays.asList(10, 10, 10, 10, 10));
@@ -183,7 +185,9 @@ public class Customizator {
         rightVBox.setAlignment(Pos.CENTER);
 
         Button backButton = new Button("Back");
-        backButton.setOnAction(e -> this.primaryStage.setScene(this.appereanceScene));
+        backButton.setOnAction(e -> {
+            this.primaryStage.setScene(this.appereanceScene);
+        });
 
         Button continueButton = new Button("Continue");
         HBox buttonsBox = new HBox(20, backButton, continueButton);
@@ -210,19 +214,65 @@ public class Customizator {
             HBox.setHgrow(traitLabel, Priority.ALWAYS);
             HBox.setHgrow(traitSlider, Priority.ALWAYS);
             traitSlider.setMajorTickUnit(1);
+            traitSlider.setMinorTickCount(0);
             traitSlider.setBlockIncrement(1);
+
             traitSlider.setSnapToTicks(true);
             Label sliderValueLabel = new Label("1");
-            traitSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
-                double snappedValue = Math.round(newValue.doubleValue());
-                traitSlider.setValue(snappedValue);
-                sliderValueLabel.setText(String.valueOf((int) snappedValue));
-            });
-            traitRow.getChildren().addAll(traitLabel, traitSlider, sliderValueLabel);
 
+            traitSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
+                int snappedValue = newValue.intValue();
+                if (snappedValue > oldValue.intValue()) {
+                    if (this.traitPoints - (snappedValue - oldValue.intValue()) >= 0) {
+                        this.traitPoints -= (snappedValue - oldValue.intValue());
+                        sliderValueLabel.setText(String.valueOf(snappedValue));
+                    } else {
+                        // If not enough trait points, revert to old value
+                        traitSlider.setValue(oldValue.intValue());
+                    }
+                } else if (snappedValue < oldValue.intValue()) {
+                    this.traitPoints += (oldValue.intValue() - snappedValue);
+                    sliderValueLabel.setText(String.valueOf(snappedValue));
+                }
+                this.traitPointsLeft.setText(String.valueOf(this.traitPoints));
+            });
+
+            traitSlider.valueProperty().addListener(this.traitSliderListener);
+            sliderValueLabel.textProperty().bind(traitSlider.valueProperty().asString("%.0f"));
+            traitRow.getChildren().addAll(traitLabel, traitSlider, sliderValueLabel);
             traitsBox.getChildren().add(traitRow);
             this.sliders.add(traitSlider);
         }
         return traitsBox;
+    }
+
+    private ChangeListener<Number> createTraitSliderListener() {
+        // TODO: When traitPoints hits 0 the sliders shouldnt move to a higher value
+        return (observable, oldValue, newValue) -> {
+            int totalSliderValue = this.sliders.stream().mapToInt(slider -> (int) slider.getValue()).sum();
+            int usedTraitPoints = totalSliderValue - this.sliders.size();
+            int remainingTraitPoints = this.traitPoints - usedTraitPoints;
+            this.traitPointsLeft.setText(String.valueOf(remainingTraitPoints));
+            if (observable instanceof Slider) { // Check if the observable is a Slider
+                Slider sourceSlider = (Slider) observable;
+                int difference = newValue.intValue() - oldValue.intValue();
+                if (difference > 0) { // Slider increased
+                    if (this.traitPoints - difference >= 0) {
+                        this.traitPoints -= difference;
+                    } else {
+                        sourceSlider.setValue(oldValue.doubleValue()); // Revert to old value if not enough points
+                    }
+                } else if (difference < 0) { // Slider decreased
+                    this.traitPoints += Math.abs(difference);
+                }
+                this.traitPoints = Math.min(Math.max(this.traitPoints, 0), 15); // Ensure trait points stay within 0 to 15
+                this.traitPointsLeft.setText(String.valueOf(this.traitPoints));
+
+                if (this.traitPoints == 0) {
+                    // Once trait points reach 0, disallow increasing sliders
+                    sourceSlider.setValue(Math.min(oldValue.doubleValue(), newValue.doubleValue()));
+                }
+            }
+        };
     }
 }
