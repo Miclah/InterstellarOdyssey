@@ -1,5 +1,6 @@
 package game.gui;
 
+import game.util.MusicPlayer;
 import game.util.Styler;
 import javafx.animation.FadeTransition;
 import javafx.geometry.Insets;
@@ -17,6 +18,7 @@ import javafx.scene.text.Text;
 import javafx.util.Duration;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Menu {
     private Stage primaryStage;
@@ -36,6 +38,10 @@ public class Menu {
     private void displayMain() {
         Image icon = new Image("file:src/main/resources/other/icon.png");
         this.primaryStage.getIcons().add(icon);
+        HashMap<String, String> tracks = new HashMap<String, String>();
+        tracks.put("menu", "music/menu.mp3");
+        MusicPlayer musicPlayer = new MusicPlayer(tracks);
+        musicPlayer.playMusic("src/main/resources/music/menu.mp3");
 
         ArrayList<String> names = new ArrayList<>();
         names.add("Start");
@@ -49,7 +55,7 @@ public class Menu {
 
         VBox vBox = Styler.createVBox(buttons);
         vBox.setAlignment(Pos.CENTER);
-        this.mainMenuScene = Styler.createScene(vBox, this.PATH_TO_CSS, true);
+        this.mainMenuScene = Styler.createScene(vBox, this.PATH_TO_CSS);
 
         this.primaryStage.setResizable(false);
         this.primaryStage.setOnCloseRequest(e -> this.primaryStage.close());
@@ -77,7 +83,7 @@ public class Menu {
 
         VBox vBox = Styler.createVBox(buttons);
         vBox.setAlignment(Pos.CENTER);
-        this.optionsScene = Styler.createScene(vBox, this.PATH_TO_CSS, true);
+        this.optionsScene = Styler.createScene(vBox, this.PATH_TO_CSS);
         this.primaryStage.setScene(this.optionsScene);
     }
 
@@ -144,7 +150,7 @@ public class Menu {
 
         vBox.getChildren().addAll(scrollPane, back.get(0));
 
-        this.aboutScene = Styler.createScene(vBox, this.PATH_TO_CSS, true);
+        this.aboutScene = Styler.createScene(vBox, this.PATH_TO_CSS);
         this.primaryStage.setScene(this.aboutScene);
     }
 
@@ -155,7 +161,7 @@ public class Menu {
         back.getLast().setOnAction(e -> this.primaryStage.setScene(this.optionsScene));
         VBox vBox = Styler.createVBox(back);
         vBox.setAlignment(Pos.CENTER);
-        this.settingsScene = Styler.createScene(vBox, this.PATH_TO_CSS, true);
+        this.settingsScene = Styler.createScene(vBox, this.PATH_TO_CSS);
         this.primaryStage.setScene(this.settingsScene);
     }
 }

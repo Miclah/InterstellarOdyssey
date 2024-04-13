@@ -35,19 +35,26 @@ public class Styler {
         return vbox;
     }
 
-    public static Scene createScene(VBox vBox, String cssFile, boolean isMenu) {
-        if (!isMenu) {
-            vBox.setAlignment(Pos.CENTER);
-            BorderPane root = new BorderPane();
-            root.getStylesheets().add(Objects.requireNonNull(Styler.class.getResource(cssFile)).toExternalForm());
-            root.setCenter(vBox);
-            return new Scene(root, 800, 600);
-        } else {
-            vBox.getStylesheets().add(Objects.requireNonNull(Styler.class.getResource(cssFile)).toExternalForm());
-            vBox.setAlignment(Pos.CENTER);
-            return new Scene(vBox, 800, 600);
-        }
+    public static Scene createScene(VBox vBox, String cssFile) {
+        StackPane root = new StackPane();
+
+        Image backgroundImage = new Image("file:src/main/resources/other/background.jpg");
+        ImageView backgroundImageView = new ImageView(backgroundImage);
+        backgroundImageView.fitWidthProperty().bind(root.widthProperty());
+        backgroundImageView.fitHeightProperty().bind(root.heightProperty());
+
+        root.getChildren().add(backgroundImageView);
+
+        root.getChildren().add(vBox);
+
+        vBox.setAlignment(Pos.CENTER);
+        vBox.setPadding(new Insets(20));
+
+        root.getStylesheets().add(Objects.requireNonNull(Styler.class.getResource(cssFile)).toExternalForm());
+
+        return new Scene(root, 800, 600);
     }
+
 
     public static ImageView createImageView(Image image, boolean preserveRatio) {
         ImageView imageView = new ImageView(image);

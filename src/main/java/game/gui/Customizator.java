@@ -58,7 +58,7 @@ public class Customizator {
 
         VBox mainLayout = new VBox();
         mainLayout.getChildren().addAll(appereanceChooser, mainHBox);
-        this.appereanceScene = Styler.createScene(mainLayout, this.PATH_TO_CSS, false);
+        this.appereanceScene = Styler.createScene(mainLayout, this.PATH_TO_CSS);
         Styler.setStage(this.primaryStage, this.appereanceScene);
 
         skinChooser1.setOnAction(e -> {
@@ -204,7 +204,7 @@ public class Customizator {
         VBox finalVBox = new VBox(30, playerInfoLabel, centerBox, buttonsBox);
         finalVBox.setAlignment(Pos.CENTER);
 
-        this.playerInfoScene = Styler.createScene(finalVBox, this.PATH_TO_CSS, false);
+        this.playerInfoScene = Styler.createScene(finalVBox, this.PATH_TO_CSS);
         Styler.setStage(this.primaryStage, this.playerInfoScene);
     }
 
@@ -254,7 +254,7 @@ public class Customizator {
         VBox abilitiesLayout = new VBox(20, abilityInfoLabel, abilitiesGrid, backButton);
         abilitiesLayout.setAlignment(Pos.CENTER);
 
-        this.abilityInfoScene = Styler.createScene(abilitiesLayout, this.PATH_TO_CSS, false);
+        this.abilityInfoScene = Styler.createScene(abilitiesLayout, this.PATH_TO_CSS);
         Styler.setStage(this.primaryStage, this.abilityInfoScene);
     }
 
