@@ -34,7 +34,7 @@ public class Menu {
     }
 
     private void displayMain() {
-        Image icon = new Image("file:src/main/resources/icon.png");
+        Image icon = new Image("file:src/main/resources/other/icon.png");
         this.primaryStage.getIcons().add(icon);
 
         ArrayList<String> names = new ArrayList<>();

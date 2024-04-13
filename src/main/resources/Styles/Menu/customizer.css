@@ -56,3 +56,26 @@
     -fx-font-weight: normal;
     -fx-text-fill: #666666;
 }
+
+.label {
+    -fx-font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #FFFFFF;
+}
+
+.check-box {
+    -fx-font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    -fx-font-size: 20px;
+    -fx-text-fill: #FFFFFF;
+}
+
+.text-field {
+    -fx-font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    -fx-font-size: 20px;
+    -fx-text-fill: #333333;
+    -fx-background-color: #FFFFFF;
+}
+
+
+

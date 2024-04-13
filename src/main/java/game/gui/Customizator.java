@@ -20,6 +20,7 @@ public class Customizator {
     private final Stage primaryStage;
     private Scene appereanceScene;
     private Scene playerInfoScene;
+    private Scene abilityInfoScene;
     private int skinChoice;
     private String name;
     private int traitPoints = 15;
@@ -71,8 +72,8 @@ public class Customizator {
     }
 
     private StackPane createFrame(String imagePath) {
-        int frameSize = 350;
-        int imageSize = 305;
+        int frameSize = 305;
+        int imageSize = 260;
 
         Image image = new Image(imagePath, imageSize, imageSize, false, false);
         ImageView imageView = Styler.createImageView(image, true);
@@ -91,17 +92,17 @@ public class Customizator {
 
         Label nameLabel = Styler.createHeaderLabel("Name:", "");
         TextField nameInput = new TextField();
-        nameInput.setPrefWidth(245);
-        nameInput.setPromptText("Input your name here");
+        nameInput.setPrefWidth(215);
+        nameInput.setPromptText("Your name here");
         nameInput.focusedProperty().addListener((observable, oldValue, newValue) -> {
             if (!newValue) {
                 if (!nameInput.getText().matches("[a-zA-Z]*")) {
-                    nameInput.setText("Can only input letters!");
+                    nameInput.setText("Input only letters!");
                     this.name = "";
                 } else {
                     this.name = nameInput.getText();
                 }
-            } else if (newValue) {
+            } else {
                 nameInput.setText("");
             }
         });
@@ -119,8 +120,8 @@ public class Customizator {
         HBox richBox = new HBox(12, new Text("Grown up in a rich family (+3 Charisma, +1 Luck):"), richCheckBox);
         HBox workshopBox = new HBox(51, new Text("Grown up in a workshop (+4 Intelligence):"), workshopCheckBox);
         HBox luckBox = new HBox(24, new Text("Born under a lucky star (+3 Luck, +1 Charisma):"), luckCheckBox);
-        HBox warriorBox = new HBox(35, new Text("Trained as a warrior (+3 Strength, +1 Agility):"), warriorCheckBox);
-        VBox backgroundBox = new VBox(10, backgroundLabel, streetBox, richBox, workshopBox, luckBox, warriorBox);
+        HBox warriorBox = new HBox(36, new Text("Trained as a warrior (+3 Strength, +1 Agility):"), warriorCheckBox);
+        VBox backgroundBox = new VBox(15, backgroundLabel, streetBox, richBox, workshopBox, luckBox, warriorBox);
         backgroundBox.setAlignment(Pos.CENTER_LEFT);
 
         List<CheckBox> checkBoxes = Arrays.asList(streetCheckBox, richCheckBox, workshopCheckBox, luckCheckBox, warriorCheckBox);
@@ -177,31 +178,87 @@ public class Customizator {
 
         VBox traitsBox = this.createTraitsBox(Arrays.asList("Intelligence", "Charisma", "Agility", "Luck", "Strength"), Arrays.asList(10, 10, 10, 10, 10));
 
-        VBox leftVBox = new VBox(20);
+        VBox leftVBox = new VBox(30);
         leftVBox.getChildren().addAll(nameBox, backgroundBox);
         leftVBox.setAlignment(Pos.CENTER);
 
-        VBox rightVBox = new VBox(20, traitsLabel, traitPointsBox, traitsBox);
+        VBox rightVBox = new VBox(30, traitsLabel, traitPointsBox, traitsBox);
         rightVBox.setAlignment(Pos.CENTER);
 
         Button backButton = new Button("Back");
         backButton.setOnAction(e -> {
             this.primaryStage.setScene(this.appereanceScene);
+            this.skinChoice = 0;
         });
 
         Button continueButton = new Button("Continue");
+        continueButton.setOnAction(e -> {
+            this.abilityInfo();
+        });
         HBox buttonsBox = new HBox(20, backButton, continueButton);
         buttonsBox.setAlignment(Pos.CENTER);
 
         HBox centerBox = new HBox(40, leftVBox, rightVBox);
         centerBox.setAlignment(Pos.CENTER);
 
-        VBox finalVBox = new VBox(20, playerInfoLabel, centerBox, buttonsBox);
+        VBox finalVBox = new VBox(30, playerInfoLabel, centerBox, buttonsBox);
         finalVBox.setAlignment(Pos.CENTER);
 
         this.playerInfoScene = Styler.createScene(finalVBox, this.PATH_TO_CSS, false);
         Styler.setStage(this.primaryStage, this.playerInfoScene);
     }
+
+    public void abilityInfo() {
+        Label abilityInfoLabel = Styler.createHeaderLabel("Choose Your Ability", "");
+
+        GridPane abilitiesGrid = new GridPane();
+        abilitiesGrid.setAlignment(Pos.CENTER);
+        abilitiesGrid.setHgap(15);
+        abilitiesGrid.setVgap(15);
+
+        List<String> abilityNames = Arrays.asList("Ability 1", "Ability 2", "Ability 3", "Ability 4", "Ability 5", "Ability 6");
+        List<String> abilityImagePaths = Arrays.asList("other/icon.png", "Player/Player1/1.png", "other/frame.png", "other/frame.png", "other/icon.png", "Player/Player1/1.png");
+        List<String> abilityBonuses = Arrays.asList("+1 Strength", "+2 Agility", "+3 Intelligence", "+1 Luck", "+2 Charisma", "+1 Strength");
+
+        for (int i = 0; i < abilityNames.size(); i++) {
+            String abilityName = abilityNames.get(i);
+            String imagePath = abilityImagePaths.get(i);
+            String bonus = abilityBonuses.get(i);
+
+            Image image = new Image(imagePath);
+            ImageView imageView = new ImageView(image);
+            imageView.setFitWidth(140);
+            imageView.setFitHeight(140);
+
+            Button abilityButton = new Button();
+            abilityButton.setGraphic(imageView);
+            abilityButton.setOnAction(e -> {
+                System.out.println("Selected Ability: " + abilityName);
+            });
+
+            Label bonusLabel = new Label(bonus);
+            bonusLabel.setAlignment(Pos.CENTER);
+
+            VBox abilityBox = new VBox(10, abilityButton, bonusLabel);
+            abilityBox.setAlignment(Pos.CENTER);
+
+            abilitiesGrid.add(abilityBox, i % 3, i / 3);
+        }
+
+        Button backButton = new Button("Back");
+        backButton.setOnAction(e -> {
+            this.primaryStage.setScene(this.playerInfoScene);
+            this.skinChoice = 0;
+        });
+
+        VBox abilitiesLayout = new VBox(20, abilityInfoLabel, abilitiesGrid, backButton);
+        abilitiesLayout.setAlignment(Pos.CENTER);
+
+        this.abilityInfoScene = Styler.createScene(abilitiesLayout, this.PATH_TO_CSS, false);
+        Styler.setStage(this.primaryStage, this.abilityInfoScene);
+    }
+
+
 
     private VBox createTraitsBox(List<String> traits, List<Integer> spaceBetween) {
         VBox traitsBox = new VBox(10);
@@ -220,23 +277,6 @@ public class Customizator {
             traitSlider.setSnapToTicks(true);
             Label sliderValueLabel = new Label("1");
 
-            traitSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
-                int snappedValue = newValue.intValue();
-                if (snappedValue > oldValue.intValue()) {
-                    if (this.traitPoints - (snappedValue - oldValue.intValue()) >= 0) {
-                        this.traitPoints -= (snappedValue - oldValue.intValue());
-                        sliderValueLabel.setText(String.valueOf(snappedValue));
-                    } else {
-                        // If not enough trait points, revert to old value
-                        traitSlider.setValue(oldValue.intValue());
-                    }
-                } else if (snappedValue < oldValue.intValue()) {
-                    this.traitPoints += (oldValue.intValue() - snappedValue);
-                    sliderValueLabel.setText(String.valueOf(snappedValue));
-                }
-                this.traitPointsLeft.setText(String.valueOf(this.traitPoints));
-            });
-
             traitSlider.valueProperty().addListener(this.traitSliderListener);
             sliderValueLabel.textProperty().bind(traitSlider.valueProperty().asString("%.0f"));
             traitRow.getChildren().addAll(traitLabel, traitSlider, sliderValueLabel);
@@ -253,23 +293,22 @@ public class Customizator {
             int usedTraitPoints = totalSliderValue - this.sliders.size();
             int remainingTraitPoints = this.traitPoints - usedTraitPoints;
             this.traitPointsLeft.setText(String.valueOf(remainingTraitPoints));
-            if (observable instanceof Slider) { // Check if the observable is a Slider
+            if (observable instanceof Slider) {
                 Slider sourceSlider = (Slider) observable;
                 int difference = newValue.intValue() - oldValue.intValue();
-                if (difference > 0) { // Slider increased
+                if (difference > 0) {
                     if (this.traitPoints - difference >= 0) {
                         this.traitPoints -= difference;
                     } else {
-                        sourceSlider.setValue(oldValue.doubleValue()); // Revert to old value if not enough points
+                        sourceSlider.setValue(oldValue.doubleValue());
                     }
-                } else if (difference < 0) { // Slider decreased
+                } else if (difference < 0) {
                     this.traitPoints += Math.abs(difference);
                 }
-                this.traitPoints = Math.min(Math.max(this.traitPoints, 0), 15); // Ensure trait points stay within 0 to 15
+                this.traitPoints = Math.min(Math.max(this.traitPoints, 0), 15);
                 this.traitPointsLeft.setText(String.valueOf(this.traitPoints));
 
                 if (this.traitPoints == 0) {
-                    // Once trait points reach 0, disallow increasing sliders
                     sourceSlider.setValue(Math.min(oldValue.doubleValue(), newValue.doubleValue()));
                 }
             }
