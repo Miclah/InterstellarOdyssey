@@ -38,12 +38,9 @@ public class Styler {
     public static Scene createScene(VBox vBox, String cssFile) {
         StackPane root = new StackPane();
 
-        Image backgroundImage = new Image("file:src/main/resources/other/background.jpg");
-        ImageView backgroundImageView = new ImageView(backgroundImage);
-        backgroundImageView.fitWidthProperty().bind(root.widthProperty());
-        backgroundImageView.fitHeightProperty().bind(root.heightProperty());
-
-        root.getChildren().add(backgroundImageView);
+//        Image backgroundImage = new Image("file:src/main/resources/other/background.jpg");
+//        ImageView backgroundImageView = new ImageView(backgroundImage);
+//        root.getChildren().add(backgroundImageView);
 
         root.getChildren().add(vBox);
 

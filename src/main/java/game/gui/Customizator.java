@@ -1,5 +1,6 @@
 package game.gui;
 
+import game.util.MusicPlayer;
 import game.util.Styler;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -28,10 +29,12 @@ public class Customizator {
     private List<Slider> sliders = new ArrayList<>();
     private Label traitPointsLeft;
     private ChangeListener<Number> traitSliderListener;
+    private MusicPlayer musicPlayer;
 
-    public Customizator(Stage primaryStage, Scene mainMenuScene) {
+    public Customizator(Stage primaryStage, Scene mainMenuScene, MusicPlayer musicPlayer) {
         this.primaryStage = primaryStage;
         this.skinSelector(mainMenuScene);
+        this.musicPlayer = musicPlayer;
         this.traitSliderListener = this.createTraitSliderListener();
     }
 
@@ -126,7 +129,7 @@ public class Customizator {
 
         List<CheckBox> checkBoxes = Arrays.asList(streetCheckBox, richCheckBox, workshopCheckBox, luckCheckBox, warriorCheckBox);
 
-        Map<CheckBox, Consumer<List<Slider>>> checkBoxActions = new HashMap<>();
+        HashMap<CheckBox, Consumer<List<Slider>>> checkBoxActions = new HashMap<>();
         checkBoxActions.put(streetCheckBox, sliders -> {
             sliders.get(4).setValue(sliders.get(4).getValue() + 1);
             sliders.get(2).setValue(sliders.get(2).getValue() + 3);
@@ -233,7 +236,8 @@ public class Customizator {
             Button abilityButton = new Button();
             abilityButton.setGraphic(imageView);
             abilityButton.setOnAction(e -> {
-                System.out.println("Selected Ability: " + abilityName);
+                new StartingArea(this.primaryStage);
+                this.musicPlayer.stop();
             });
 
             Label bonusLabel = new Label(bonus);

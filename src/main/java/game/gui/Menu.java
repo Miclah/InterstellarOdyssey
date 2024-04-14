@@ -49,7 +49,7 @@ public class Menu {
         names.add("Exit");
         ArrayList<Button> buttons = Styler.createButtons(names);
 
-        buttons.get(0).setOnAction(e -> new Customizator(this.primaryStage, this.mainMenuScene));
+        buttons.get(0).setOnAction(e -> new Customizator(this.primaryStage, this.mainMenuScene, musicPlayer));
         buttons.get(1).setOnAction(e -> this.displayOptions());
         buttons.get(2).setOnAction(e -> this.primaryStage.close());
 

@@ -71,6 +71,13 @@ public class MusicPlayer {
         }
     }
 
+    public void stop() {
+        if (this.mediaPlayer != null) {
+            this.mediaPlayer.stop();
+            this.isMusicPlaying = false;
+        }
+    }
+
     public void disposeMediaPlayer() {
         if (this.mediaPlayer != null) {
             this.mediaPlayer.dispose();
