@@ -24,7 +24,6 @@ public class MusicPlayer {
         if (!this.isMusicPlaying) {
             try {
                 File musicFile = new File(musicPath);
-                System.out.println(musicFile.getAbsolutePath());
 
                 if (!musicFile.exists()) {
                     this.handleMusicLoadError();

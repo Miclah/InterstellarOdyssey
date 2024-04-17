@@ -41,7 +41,7 @@ public class Menu {
         HashMap<String, String> tracks = new HashMap<String, String>();
         tracks.put("menu", "music/menu.mp3");
         MusicPlayer musicPlayer = new MusicPlayer(tracks);
-        musicPlayer.playMusic("src/main/resources/music/menu.mp3");
+        musicPlayer.playMusic("src\\main\\resources\\Music\\menu.mp3");
 
         ArrayList<String> names = new ArrayList<>();
         names.add("Start");

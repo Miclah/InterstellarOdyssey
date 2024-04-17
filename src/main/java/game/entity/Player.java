@@ -1,52 +1,57 @@
 package game.entity;
 
 import game.util.Direction;
+import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
 
 public class Player extends Entity {
+    // TODO: nemozes mat pristup k attributom predka musis ist settery
     private final ArrayList<Image> frames;
     private ImageView currentFrame;
     private Direction direction;
     private int spriteNumber;
     private int spriteCounter;
-    private int x;
-    private int y;
     private int speed;
     private boolean isMoving;
     private Direction lastDirection;
-
-    public Player(int x, int y, int speed) {
-        this.x = x;
-        this.y = y;
+    private double screenX, screenY;
+    private Scene scene;
+    public Player(int worldX, int worldY, int speed, String name, Scene scene) {
+        super(worldX, worldY, name);
         this.speed = speed;
         this.frames = this.loadImages();
-        this.setDefaultValues();
-        this.currentFrame = new ImageView(this.frames.get(2));
+        this.currentFrame = new ImageView(this.frames.get(1));
+        this.lastDirection = Direction.DOWN;
+        this.scene = scene;
+        this.screenX = scene.getWidth() / 2 - 32;
+        this.screenY = scene.getHeight() / 2 - 32;
     }
 
     @Override
-    ArrayList<Image> loadImages() {
+    public ArrayList<Image> loadImages() {
         ArrayList<Image> frames = new ArrayList<>();
         for (int i = 0; i < 12; i++) {
-            String filename = String.format("/textures/player/player_%02d.png", i);
+            String filename = String.format("/textures/player/skin/player%02d.png", i);
             Image image = new Image(filename);
             frames.add(image);
         }
         return frames;
     }
 
-    public void setDefaultValues() {
-        this.x = 0;
-        this.y = 0;
-        this.speed = 20;
-        this.direction = Direction.DOWN;
-        this.spriteNumber = 1;
-        this.isMoving = false;
+    @Override
+    public void createLabel() {
+        this.setLabel(new Label(this.getName()));
+        this.getLabel().setTranslateX(this.scene.getWidth() / 2 - 48);
+        this.getLabel().setTranslateY(this.scene.getHeight() / 2 - 64);
+        this.getLabel().setTextFill(Color.BLACK);
+        this.showLabel();
     }
 
     public void update(KeyEvent event) {
@@ -56,28 +61,28 @@ public class Player extends Entity {
                 this.isMoving = true;
                 switch (event.getCode()) {
                     case W:
-                        this.y -= this.speed;
+                        this.setWorldY(this.getWorldY() -this.speed);
                         this.direction = Direction.UP;
                         this.lastDirection = Direction.UP;
                         break;
                     case S:
-                        this.y += this.speed;
+                        this.setWorldY(this.getWorldY() + this.speed);
                         this.direction = Direction.DOWN;
                         this.lastDirection = Direction.DOWN;
                         break;
                     case A:
-                        this.x -= this.speed;
+                        this.setWorldX(this.getWorldX() - this.speed);
                         this.direction = Direction.LEFT;
                         this.lastDirection = Direction.LEFT;
                         break;
                     case D:
-                        this.x += this.speed;
+                        this.setWorldX(this.getWorldX() + this.speed);
                         this.direction = Direction.RIGHT;
                         this.lastDirection = Direction.RIGHT;
                         break;
                 }
                 this.spriteCounter++;
-                if (this.spriteCounter > 0) {
+                if (this.spriteCounter > 10) {
                     if (this.spriteNumber == 1) {
                         this.spriteNumber = 2;
                     } else {
@@ -93,49 +98,50 @@ public class Player extends Entity {
     }
 
     public void changeFrame() {
+        // TODO: Default stance
         if (!this.isMoving) {
             switch (this.lastDirection) {
                 case UP:
-                    this.currentFrame.setImage(this.frames.get(0));
+                    this.currentFrame.setImage(this.frames.get(10));
                     break;
                 case DOWN:
-                    this.currentFrame.setImage(this.frames.get(2));
+                    this.currentFrame.setImage(this.frames.get(1));
                     break;
                 case LEFT:
-                    this.currentFrame.setImage(this.frames.get(5));
+                    this.currentFrame.setImage(this.frames.get(4));
                     break;
                 case RIGHT:
-                    this.currentFrame.setImage(this.frames.get(8));
+                    this.currentFrame.setImage(this.frames.get(7));
                     break;
             }
         } else {
             switch (this.direction) {
                 case UP:
                     if (this.spriteNumber == 1) {
-                        this.currentFrame.setImage(this.frames.get(1));
+                        this.currentFrame.setImage(this.frames.get(9));
                     } else {
                         this.currentFrame.setImage(this.frames.get(11));
                     }
                     break;
                 case DOWN:
                     if (this.spriteNumber == 1) {
-                        this.currentFrame.setImage(this.frames.get(3));
+                        this.currentFrame.setImage(this.frames.get(0));
                     } else {
-                        this.currentFrame.setImage(this.frames.get(4));
+                        this.currentFrame.setImage(this.frames.get(2));
                     }
                     break;
                 case LEFT:
                     if (this.spriteNumber == 1) {
-                        this.currentFrame.setImage(this.frames.get(6));
+                        this.currentFrame.setImage(this.frames.get(3));
                     } else {
-                        this.currentFrame.setImage(this.frames.get(7));
+                        this.currentFrame.setImage(this.frames.get(5));
                     }
                     break;
                 case RIGHT:
                     if (this.spriteNumber == 1) {
-                        this.currentFrame.setImage(this.frames.get(9));
+                        this.currentFrame.setImage(this.frames.get(6));
                     } else {
-                        this.currentFrame.setImage(this.frames.get(10));
+                        this.currentFrame.setImage(this.frames.get(8));
                     }
                     break;
             }
@@ -146,11 +152,11 @@ public class Player extends Entity {
         return this.currentFrame;
     }
 
-    public int getX() {
-        return this.x;
+    public double getScreenY() {
+        return this.screenY;
     }
 
-    public int getY() {
-        return this.y;
+    public double getScreenX() {
+        return this.screenX;
     }
 }
