@@ -23,6 +23,7 @@ public class Player extends Entity {
     private Direction lastDirection;
     private double screenX, screenY;
     private Scene scene;
+
     public Player(int worldX, int worldY, int speed, String name, Scene scene) {
         super(worldX, worldY, name);
         this.speed = speed;
@@ -32,6 +33,8 @@ public class Player extends Entity {
         this.scene = scene;
         this.screenX = scene.getWidth() / 2 - 32;
         this.screenY = scene.getHeight() / 2 - 32;
+        this.getLabel().layoutXProperty().bind(scene.widthProperty().divide(2).subtract(19));
+        this.getLabel().layoutYProperty().bind(scene.heightProperty().divide(2).subtract(56));
     }
 
     @Override
@@ -43,15 +46,6 @@ public class Player extends Entity {
             frames.add(image);
         }
         return frames;
-    }
-
-    @Override
-    public void createLabel() {
-        this.setLabel(new Label(this.getName()));
-        this.getLabel().setTranslateX(this.scene.getWidth() / 2 - 48);
-        this.getLabel().setTranslateY(this.scene.getHeight() / 2 - 64);
-        this.getLabel().setTextFill(Color.BLACK);
-        this.showLabel();
     }
 
     public void update(KeyEvent event) {
@@ -158,5 +152,9 @@ public class Player extends Entity {
 
     public double getScreenX() {
         return this.screenX;
+    }
+
+    public boolean isMoving() {
+        return this.isMoving;
     }
 }

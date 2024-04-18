@@ -13,8 +13,8 @@ public class TileManager {
     private final Tile[] tiles;
     private final int[][] mapTiles;
     private final int tileSize = 32;
-    private final int maxWorldCol = 50;
-    private final int maxWorldRow = 50;
+    private final int maxWorldCol = 100;
+    private final int maxWorldRow = 100;
     private final int worldWidth = this.maxWorldCol * this.tileSize;
     private final int worldHeight = this.maxWorldRow * this.tileSize;
 
@@ -78,9 +78,9 @@ public class TileManager {
             int screenY = (int) (worldY - player.getWorldY() + player.getScreenY());
 
             if (worldX + this.tileSize > player.getWorldX() - player.getScreenX() &&
-                worldX - this.tileSize < player.getWorldX() + player.getScreenX() &&
+                worldX - this.tileSize < player.getWorldX() + player.getScreenX() + 48 &&
                 worldY + this.tileSize > player.getWorldY() - player.getScreenY() &&
-                worldY - this.tileSize < player.getWorldY() + player.getScreenY()) {
+                worldY - this.tileSize < player.getWorldY() + player.getScreenY() + 48) {
                 gc.drawImage(this.tiles[tileNum].getImage(), screenX, screenY);
             }
             worldCol++;
