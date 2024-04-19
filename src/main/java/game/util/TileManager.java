@@ -1,6 +1,7 @@
-package game.tile;
+package game.util;
 
 import game.entity.Player;
+import game.tile.Tile;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 

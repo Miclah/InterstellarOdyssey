@@ -1,5 +1,6 @@
 package game.gui;
 
+import game.state.GameManager;
 import game.util.MusicPlayer;
 import game.util.Styler;
 import javafx.beans.value.ChangeListener;
@@ -236,7 +237,7 @@ public class Customizator {
             Button abilityButton = new Button();
             abilityButton.setGraphic(imageView);
             abilityButton.setOnAction(e -> {
-                new StartingArea(this.primaryStage);
+                new GameManager(this.primaryStage, 1);
                 this.musicPlayer.stop();
             });
 

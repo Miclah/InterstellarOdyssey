@@ -13,4 +13,8 @@ public class Tile {
     public void setImage(Image image) {
         this.image = image;
     }
+
+    public void setColision(boolean colision) {
+        this.colision = colision;
+    }
 }

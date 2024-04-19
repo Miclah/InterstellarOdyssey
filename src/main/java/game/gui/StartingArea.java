@@ -1,7 +1,7 @@
 package game.gui;
 
 import game.entity.Player;
-import game.tile.TileManager;
+import game.util.TileManager;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -44,9 +44,7 @@ public class StartingArea {
 
     private void startGameLoop(GraphicsContext gc) {
         Timeline gameLoop = new Timeline(new KeyFrame(Duration.seconds(1.0 / 60), e -> {
-            boolean wasMoving = this.player.isMoving();
-            this.player.update(null);
-            if (this.player.isMoving() || wasMoving) {
+            if (this.player.isMoving()) {
                 gc.clearRect(0, 0, this.canvas.getWidth(), this.canvas.getHeight());
                 this.tileManager.drawTiles(gc, this.player);
             }

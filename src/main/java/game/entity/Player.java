@@ -1,40 +1,40 @@
 package game.entity;
 
+import game.state.KeyManager;
 import game.util.Direction;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 
 import java.util.ArrayList;
 
 public class Player extends Entity {
     // TODO: nemozes mat pristup k attributom predka musis ist settery
+    // TODO: Colizie s objektami
     private final ArrayList<Image> frames;
     private ImageView currentFrame;
     private Direction direction;
     private int spriteNumber;
     private int spriteCounter;
     private int speed;
-    private boolean isMoving;
-    private Direction lastDirection;
     private double screenX, screenY;
-    private Scene scene;
+    private KeyManager keyManager;
 
     public Player(int worldX, int worldY, int speed, String name, Scene scene) {
         super(worldX, worldY, name);
         this.speed = speed;
         this.frames = this.loadImages();
         this.currentFrame = new ImageView(this.frames.get(1));
-        this.lastDirection = Direction.DOWN;
-        this.scene = scene;
         this.screenX = scene.getWidth() / 2 - 32;
         this.screenY = scene.getHeight() / 2 - 32;
         this.getLabel().layoutXProperty().bind(scene.widthProperty().divide(2).subtract(19));
         this.getLabel().layoutYProperty().bind(scene.heightProperty().divide(2).subtract(56));
+        this.setCollisionRectangle(new Rectangle(14, 28, 32, 32));
+        this.keyManager = new KeyManager();
+        this.keyManager.setLastDirection(Direction.DOWN);
     }
 
     @Override
@@ -49,43 +49,22 @@ public class Player extends Entity {
     }
 
     public void update(KeyEvent event) {
-        if (event != null) {
-            if (event.getCode() == KeyCode.A || event.getCode() == KeyCode.S ||
-                    event.getCode() == KeyCode.D || event.getCode() == KeyCode.W) {
-                this.isMoving = true;
-                switch (event.getCode()) {
-                    case W:
-                        this.setWorldY(this.getWorldY() -this.speed);
-                        this.direction = Direction.UP;
-                        this.lastDirection = Direction.UP;
-                        break;
-                    case S:
-                        this.setWorldY(this.getWorldY() + this.speed);
-                        this.direction = Direction.DOWN;
-                        this.lastDirection = Direction.DOWN;
-                        break;
-                    case A:
-                        this.setWorldX(this.getWorldX() - this.speed);
-                        this.direction = Direction.LEFT;
-                        this.lastDirection = Direction.LEFT;
-                        break;
-                    case D:
-                        this.setWorldX(this.getWorldX() + this.speed);
-                        this.direction = Direction.RIGHT;
-                        this.lastDirection = Direction.RIGHT;
-                        break;
+        this.direction = this.keyManager.move(event);
+        if (this.direction != null) {
+            switch (this.direction) {
+                case UP -> this.setWorldY(this.getWorldY() - this.speed);
+                case DOWN -> this.setWorldY(this.getWorldY() + this.speed);
+                case LEFT -> this.setWorldX(this.getWorldX() - this.speed);
+                case RIGHT -> this.setWorldX(this.getWorldX() + this.speed);
+            }
+            this.spriteCounter++;
+            if (this.spriteCounter > 2) {
+                if (this.spriteNumber == 1) {
+                    this.spriteNumber = 2;
+                } else {
+                    this.spriteNumber = 1;
                 }
-                this.spriteCounter++;
-                if (this.spriteCounter > 10) {
-                    if (this.spriteNumber == 1) {
-                        this.spriteNumber = 2;
-                    } else {
-                        this.spriteNumber = 1;
-                    }
-                    this.spriteCounter = 0;
-                }
-            } else {
-                this.isMoving = false;
+                this.spriteCounter = 0;
             }
             this.changeFrame();
         }
@@ -93,8 +72,8 @@ public class Player extends Entity {
 
     public void changeFrame() {
         // TODO: Default stance
-        if (!this.isMoving) {
-            switch (this.lastDirection) {
+        if (!this.keyManager.isMoving()) {
+            switch (this.keyManager.getLastDirection()) {
                 case UP:
                     this.currentFrame.setImage(this.frames.get(10));
                     break;
@@ -155,6 +134,6 @@ public class Player extends Entity {
     }
 
     public boolean isMoving() {
-        return this.isMoving;
+        return this.keyManager.isMoving();
     }
 }
