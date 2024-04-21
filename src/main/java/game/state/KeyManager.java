@@ -5,55 +5,54 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 
 public class KeyManager {
-    private boolean isMoving;
-    private Direction lastDirection;
     private Direction currentDirection;
+    private boolean paused;
+    private boolean isMoving;
 
     public KeyManager() {
-        this.isMoving = false;
         this.currentDirection = Direction.DOWN;
+        this.paused = false;
+        this.isMoving = false;
     }
 
-    public Direction move(KeyEvent event) {
-        if (event != null) {
-            if (event.getCode() == KeyCode.A || event.getCode() == KeyCode.S ||
-                    event.getCode() == KeyCode.D || event.getCode() == KeyCode.W) {
+    public void handleKeyPressed(KeyEvent event) {
+        if (event.getCode() == KeyCode.P) {
+            this.paused = !this.paused;
+            return;
+        }
+        if (!this.paused) {
+            if (event.getCode() == KeyCode.W || event.getCode() == KeyCode.A
+                    || event.getCode() == KeyCode.S || event.getCode() == KeyCode.D) {
                 this.isMoving = true;
                 switch (event.getCode()) {
                     case W:
                         this.currentDirection = Direction.UP;
-                        this.lastDirection = Direction.UP;
                         break;
                     case S:
                         this.currentDirection = Direction.DOWN;
-                        this.lastDirection = Direction.DOWN;
                         break;
                     case A:
                         this.currentDirection = Direction.LEFT;
-                        this.lastDirection = Direction.LEFT;
                         break;
                     case D:
                         this.currentDirection = Direction.RIGHT;
-                        this.lastDirection = Direction.RIGHT;
                         break;
                 }
-            } else {
-                this.isMoving = false;
-                this.currentDirection = null;
             }
         }
+    }
+
+
+
+    public Direction getCurrentDirection() {
         return this.currentDirection;
+    }
+
+    public boolean isPaused() {
+        return this.paused;
     }
 
     public boolean isMoving() {
         return this.isMoving;
-    }
-
-    public Direction getLastDirection() {
-        return this.lastDirection;
-    }
-
-    public void setLastDirection(Direction lastDirection) {
-        this.lastDirection = lastDirection;
     }
 }

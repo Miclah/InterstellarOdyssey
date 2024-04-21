@@ -11,9 +11,10 @@ import javafx.scene.shape.Rectangle;
 
 import java.util.ArrayList;
 
+// TODO: nemozes mat pristup k attributom predka musis ist settery
+// TODO: Colizie s objektami
 public class Player extends Entity {
-    // TODO: nemozes mat pristup k attributom predka musis ist settery
-    // TODO: Colizie s objektami
+
     private final ArrayList<Image> frames;
     private ImageView currentFrame;
     private Direction direction;
@@ -23,7 +24,7 @@ public class Player extends Entity {
     private double screenX, screenY;
     private KeyManager keyManager;
 
-    public Player(int worldX, int worldY, int speed, String name, Scene scene) {
+    public Player(int worldX, int worldY, int speed, String name, Scene scene, KeyManager keyManager) {
         super(worldX, worldY, name);
         this.speed = speed;
         this.frames = this.loadImages();
@@ -33,8 +34,7 @@ public class Player extends Entity {
         this.getLabel().layoutXProperty().bind(scene.widthProperty().divide(2).subtract(19));
         this.getLabel().layoutYProperty().bind(scene.heightProperty().divide(2).subtract(56));
         this.setCollisionRectangle(new Rectangle(14, 28, 32, 32));
-        this.keyManager = new KeyManager();
-        this.keyManager.setLastDirection(Direction.DOWN);
+        this.keyManager = keyManager;
     }
 
     @Override
@@ -49,75 +49,62 @@ public class Player extends Entity {
     }
 
     public void update(KeyEvent event) {
-        this.direction = this.keyManager.move(event);
-        if (this.direction != null) {
-            switch (this.direction) {
-                case UP -> this.setWorldY(this.getWorldY() - this.speed);
-                case DOWN -> this.setWorldY(this.getWorldY() + this.speed);
-                case LEFT -> this.setWorldX(this.getWorldX() - this.speed);
-                case RIGHT -> this.setWorldX(this.getWorldX() + this.speed);
-            }
-            this.spriteCounter++;
-            if (this.spriteCounter > 2) {
-                if (this.spriteNumber == 1) {
-                    this.spriteNumber = 2;
-                } else {
-                    this.spriteNumber = 1;
+        if (event != null) {
+            this.keyManager.handleKeyPressed(event);
+            if (this.keyManager.isMoving() && !this.keyManager.isPaused()) {
+                this.direction = this.keyManager.getCurrentDirection();
+                if (this.direction != null) {
+                    switch (this.direction) {
+                        case UP -> this.setWorldY(this.getWorldY() - this.speed);
+                        case DOWN -> this.setWorldY(this.getWorldY() + this.speed);
+                        case LEFT -> this.setWorldX(this.getWorldX() - this.speed);
+                        case RIGHT -> this.setWorldX(this.getWorldX() + this.speed);
+                    }
+                    this.spriteCounter++;
+                    if (this.spriteCounter > 2) {
+                        if (this.spriteNumber == 1) {
+                            this.spriteNumber = 2;
+                        } else {
+                            this.spriteNumber = 1;
+                        }
+                        this.spriteCounter = 0;
+                    }
+                    this.changeFrame();
                 }
-                this.spriteCounter = 0;
             }
-            this.changeFrame();
         }
     }
 
     public void changeFrame() {
-        // TODO: Default stance
-        if (!this.keyManager.isMoving()) {
-            switch (this.keyManager.getLastDirection()) {
-                case UP:
-                    this.currentFrame.setImage(this.frames.get(10));
-                    break;
-                case DOWN:
-                    this.currentFrame.setImage(this.frames.get(1));
-                    break;
-                case LEFT:
-                    this.currentFrame.setImage(this.frames.get(4));
-                    break;
-                case RIGHT:
-                    this.currentFrame.setImage(this.frames.get(7));
-                    break;
-            }
-        } else {
-            switch (this.direction) {
-                case UP:
-                    if (this.spriteNumber == 1) {
-                        this.currentFrame.setImage(this.frames.get(9));
-                    } else {
-                        this.currentFrame.setImage(this.frames.get(11));
-                    }
-                    break;
-                case DOWN:
-                    if (this.spriteNumber == 1) {
-                        this.currentFrame.setImage(this.frames.get(0));
-                    } else {
-                        this.currentFrame.setImage(this.frames.get(2));
-                    }
-                    break;
-                case LEFT:
-                    if (this.spriteNumber == 1) {
-                        this.currentFrame.setImage(this.frames.get(3));
-                    } else {
-                        this.currentFrame.setImage(this.frames.get(5));
-                    }
-                    break;
-                case RIGHT:
-                    if (this.spriteNumber == 1) {
-                        this.currentFrame.setImage(this.frames.get(6));
-                    } else {
-                        this.currentFrame.setImage(this.frames.get(8));
-                    }
-                    break;
-            }
+        switch (this.direction) {
+            case UP:
+                if (this.spriteNumber == 1) {
+                    this.currentFrame.setImage(this.frames.get(9));
+                } else {
+                    this.currentFrame.setImage(this.frames.get(11));
+                }
+                break;
+            case DOWN:
+                if (this.spriteNumber == 1) {
+                    this.currentFrame.setImage(this.frames.get(0));
+                } else {
+                    this.currentFrame.setImage(this.frames.get(2));
+                }
+                break;
+            case LEFT:
+                if (this.spriteNumber == 1) {
+                    this.currentFrame.setImage(this.frames.get(3));
+                } else {
+                    this.currentFrame.setImage(this.frames.get(5));
+                }
+                break;
+            case RIGHT:
+                if (this.spriteNumber == 1) {
+                    this.currentFrame.setImage(this.frames.get(6));
+                } else {
+                    this.currentFrame.setImage(this.frames.get(8));
+                }
+                break;
         }
     }
 
@@ -135,5 +122,9 @@ public class Player extends Entity {
 
     public boolean isMoving() {
         return this.keyManager.isMoving();
+    }
+
+    public boolean isPaused() {
+        return this.keyManager.isPaused();
     }
 }
