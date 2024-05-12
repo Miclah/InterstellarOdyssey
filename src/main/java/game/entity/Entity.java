@@ -1,5 +1,6 @@
 package game.entity;
 
+import game.util.SpriteLoader;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
@@ -10,16 +11,17 @@ import java.util.ArrayList;
 public abstract class Entity {
 
     private int worldX, worldY;
-    private String name;
+    private final String name;
     private Label label;
     private Rectangle collisionRectangle;
+    private ArrayList<Image> frames;
 
-    public abstract ArrayList<Image> loadImages();
-
-    public Entity(int worldX, int worldY, String name) {
+    public Entity(int worldX, int worldY, String name, String pathToImage) {
         this.worldX = worldX;
         this.worldY = worldY;
         this.name = name;
+        this.frames = new ArrayList<>();
+        this.frames = SpriteLoader.loadImages(pathToImage);
         this.createLabel();
     }
 
@@ -28,12 +30,12 @@ public abstract class Entity {
         this.label.setTextFill(Color.BLACK);
         this.label.setStyle("-fx-background-color: transparent; -fx-padding: 5px;");
         this.label.setVisible(true);
-
     }
 
     public Label getLabel() {
         return this.label;
     }
+
     public int getWorldX() {
         return this.worldX;
     }
@@ -52,6 +54,10 @@ public abstract class Entity {
 
     public Rectangle getCollisionRectangle() {
         return this.collisionRectangle;
+    }
+
+    public ArrayList<Image> getFrames() {
+        return this.frames;
     }
 
     public void setCollisionRectangle(Rectangle collisionRectangle) {

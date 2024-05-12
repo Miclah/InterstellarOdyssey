@@ -14,5 +14,6 @@ public class Main extends Application {
     public void start(Stage stage) throws Exception {
         new Menu(stage);
         // TODO: Pixel art font
+        // TODO: Random planet surface generator
     }
 }

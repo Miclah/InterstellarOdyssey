@@ -1,5 +1,6 @@
 package game.gui;
 
+import game.entity.RelationshipType;
 import game.util.MusicPlayer;
 import game.util.Styler;
 import javafx.animation.FadeTransition;
@@ -62,11 +63,11 @@ public class Menu {
         Styler.setStage(this.primaryStage, this.mainMenuScene);
 
         if (!this.transitionPlayed) {
-            FadeTransition fadeIn = new FadeTransition(Duration.seconds(3), primaryStage.getScene().getRoot());
+            FadeTransition fadeIn = new FadeTransition(Duration.seconds(3), this.primaryStage.getScene().getRoot());
             fadeIn.setFromValue(0.25);
             fadeIn.setToValue(1);
             fadeIn.play();
-            transitionPlayed = true;
+            this.transitionPlayed = true;
         }
     }
 
@@ -163,6 +164,7 @@ public class Menu {
         vBox.setAlignment(Pos.CENTER);
         this.settingsScene = Styler.createScene(vBox, this.PATH_TO_CSS);
         this.primaryStage.setScene(this.settingsScene);
+        System.out.println(RelationshipType.HOSTILE.getValue());;
     }
 }
 

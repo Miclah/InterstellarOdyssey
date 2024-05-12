@@ -1,11 +1,13 @@
 package game.util;
 
+import game.entity.Entity;
 import game.entity.Player;
 import game.tile.Tile;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
@@ -16,8 +18,7 @@ public class TileManager {
     private final int tileSize = 32;
     private final int maxWorldCol = 100;
     private final int maxWorldRow = 100;
-    private final int worldWidth = this.maxWorldCol * this.tileSize;
-    private final int worldHeight = this.maxWorldRow * this.tileSize;
+    private boolean inPlayerView = false;
 
     public TileManager() {
         this.tiles = new Tile[4];
@@ -67,7 +68,7 @@ public class TileManager {
         }
     }
 
-    public void drawTiles(GraphicsContext gc, Player player) {
+    public void drawTiles(GraphicsContext gc, Player player, ArrayList<Entity> entities) {
         int worldCol = 0;
         int worldRow = 0;
 
@@ -82,8 +83,10 @@ public class TileManager {
                 worldX - this.tileSize < player.getWorldX() + player.getScreenX() + 48 &&
                 worldY + this.tileSize > player.getWorldY() - player.getScreenY() &&
                 worldY - this.tileSize < player.getWorldY() + player.getScreenY() + 48) {
+                this.inPlayerView = true;
                 gc.drawImage(this.tiles[tileNum].getImage(), screenX, screenY);
             }
+            this.inPlayerView = false;
             worldCol++;
 
             if (worldCol == this.maxWorldCol) {
@@ -95,5 +98,9 @@ public class TileManager {
 
     public int getTileSize() {
         return this.tileSize;
+    }
+
+    public boolean isInPlayerView() {
+        return this.inPlayerView;
     }
 }
