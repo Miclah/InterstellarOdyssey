@@ -42,8 +42,6 @@ public class KeyManager {
         }
     }
 
-
-
     public Direction getCurrentDirection() {
         return this.currentDirection;
     }

@@ -1,0 +1,56 @@
+{
+  "GENERAL": {
+    "HOSTILE": [
+      "Begone, stranger!",
+      "Don't make me hurt you!",
+      "You're not welcome here!"
+    ],
+    "UNFRIENDLY": [
+      "You again? What do you want now?",
+      "Don't do something stupid.",
+      "I don't trust your kind."
+    ],
+    "NEUTRAL": [
+      "Welcome, traveler.",
+      "How you doing?",
+      "What do you want? I'm busy."
+    ],
+    "FRIENDLY": [
+      "Good day, friend!",
+      "Hey friendo!",
+      "Always a pleasure to see you."
+    ],
+    "ALLY": [
+      "Greetings, comrade!",
+      "Anything you need, just ask.",
+      "You're practically family now."
+    ]
+  },
+  "SHOPKEEPER": {
+    "HOSTILE": [
+      "I won't do business with you!",
+      "Get out of my shop!",
+      "Your kind is not welcome here!"
+    ],
+    "UNFRIENDLY": [
+      "Prices are higher for troublemakers like you.",
+      "What do you want? I'm busy.",
+      "I'm watching you closely."
+    ],
+    "NEUTRAL": [
+      "Welcome to my shop.",
+      "Feel free to take a look around.",
+      "Can I help you find something?"
+    ],
+    "FRIENDLY": [
+      "Good to see you again, valued customer!",
+      "Here's a special discount, just for you.",
+      "I appreciate your business."
+    ],
+    "ALLY": [
+      "My friend! What can I do for you today?",
+      "You're like family to me. Take whatever you need.",
+      "The best prices in town, just for you."
+    ]
+  }
+}

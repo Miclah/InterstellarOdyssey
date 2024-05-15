@@ -43,7 +43,7 @@ public class TileManager {
 
     private void loadMap() {
         try {
-            InputStream inputStream = this.getClass().getResourceAsStream("/textures/maps/mapEarth.txt");
+            InputStream inputStream = this.getClass().getResourceAsStream("/textures/files/mapEarth.txt");
             Scanner scanner = new Scanner(inputStream);
 
             int col = 0;

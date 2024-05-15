@@ -1,5 +1,7 @@
 package game.entity;
 
+import javafx.scene.canvas.Canvas;
+
 public interface Talkable {
-    public void talk();
+    void talk(Canvas canvas);
 }

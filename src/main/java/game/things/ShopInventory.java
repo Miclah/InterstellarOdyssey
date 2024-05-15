@@ -10,7 +10,7 @@ public class ShopInventory {
     }
 
     public ArrayList<Thing> getInventory() {
-        return this.inventory;
+        return this.inventory; // vytvorit novy arraylist inak porusi zapuzdrenie?
     }
 
     public void addItem(Thing thing) {

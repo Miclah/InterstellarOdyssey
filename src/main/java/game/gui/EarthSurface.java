@@ -1,9 +1,9 @@
 package game.gui;
 
 import game.entity.Entity;
+import game.entity.NPC;
 import game.entity.Player;
 import game.state.KeyManager;
-import game.util.SpriteLoader;
 import game.util.TileManager;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
@@ -13,7 +13,6 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Label;
-import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
@@ -66,7 +65,11 @@ public class EarthSurface {
                     this.player.update(null);
                     gc.clearRect(0, 0, this.canvas.getWidth(), this.canvas.getHeight());
                     if (this.tileManager.isInPlayerView()) {
-//                        gc
+                        for (Entity entity : this.entities) {
+                            if (entity instanceof NPC npc) {
+                                npc.interact(this.canvas);
+                            }
+                        }
                     }
                     this.tileManager.drawTiles(gc, this.player, this.entities);
                 }

@@ -3,12 +3,9 @@ package game.entity;
 import game.state.KeyManager;
 import game.util.Direction;
 import javafx.scene.Scene;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.shape.Rectangle;
-
-import java.util.ArrayList;
 
 // TODO: Colizie s objektami
 public class Player extends Entity {

@@ -1,6 +1,6 @@
 package game.entity;
 
-import game.util.SpriteLoader;
+import game.io.Loader;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
@@ -21,7 +21,7 @@ public abstract class Entity {
         this.worldY = worldY;
         this.name = name;
         this.frames = new ArrayList<>();
-        this.frames = SpriteLoader.loadImages(pathToImage);
+        this.frames = Loader.loadImages(pathToImage);
         this.createLabel();
     }
 
