@@ -2,8 +2,12 @@ package game.io;
 
 import game.entity.RelationshipType;
 import javafx.scene.image.Image;
+
+import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -13,18 +17,19 @@ import org.json.JSONObject;
 public class Loader {
 
     public static ArrayList<Image> loadImages(String filePath) {
-        ArrayList<Image> frames = new ArrayList<>();
+        ArrayList<Image> frames = new ArrayList<> ();
         for (int i = 0; i < 12; i++) {
-            String filename = String.format("/textures/" + filePath + "%02d.png",  i);
-            Image image = new Image(filename);
-            frames.add(image);
+            String filename = String.format ("/textures/" + filePath + "%02d.png", i);
+            Image image = new Image (filename);
+            frames.add (image);
         }
         return frames;
     }
 
     public static HashMap<RelationshipType, ArrayList<String>> loadDialogues(String filePath, String npcType) {
-        try (FileReader reader = new FileReader(filePath)) {
-            JSONObject jsonData = new JSONObject(reader);
+        try {
+            String fileContent = Files.readString(Paths.get(filePath));
+            JSONObject jsonData = new JSONObject(fileContent);
             JSONObject npcData = jsonData.getJSONObject(npcType.toUpperCase());
 
             HashMap<RelationshipType, ArrayList<String>> dialogues = new HashMap<>();

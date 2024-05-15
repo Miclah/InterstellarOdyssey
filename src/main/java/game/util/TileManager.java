@@ -1,6 +1,6 @@
 package game.util;
 
-import game.entity.Entity;
+import game.entity.NPC;
 import game.entity.Player;
 import game.tile.Tile;
 import javafx.scene.canvas.GraphicsContext;
@@ -18,7 +18,7 @@ public class TileManager {
     private final int tileSize = 32;
     private final int maxWorldCol = 100;
     private final int maxWorldRow = 100;
-    private boolean inPlayerView = false;
+    private boolean isInPlayerView = false;
 
     public TileManager() {
         this.tiles = new Tile[4];
@@ -68,9 +68,10 @@ public class TileManager {
         }
     }
 
-    public void drawTiles(GraphicsContext gc, Player player, ArrayList<Entity> entities) {
+    public void draw(GraphicsContext gc, Player player, ArrayList<NPC> npcs) {
         int worldCol = 0;
         int worldRow = 0;
+        this.isInPlayerView = false;
 
         while (worldCol < this.maxWorldCol && worldRow < this.maxWorldRow) {
             int tileNum = this.mapTiles[worldCol][worldRow];
@@ -79,16 +80,27 @@ public class TileManager {
             int screenX = (int) (worldX - player.getWorldX() + player.getScreenX());
             int screenY = (int) (worldY - player.getWorldY() + player.getScreenY());
 
-            if (worldX + this.tileSize > player.getWorldX() - player.getScreenX() &&
-                worldX - this.tileSize < player.getWorldX() + player.getScreenX() + 48 &&
-                worldY + this.tileSize > player.getWorldY() - player.getScreenY() &&
-                worldY - this.tileSize < player.getWorldY() + player.getScreenY() + 48) {
-                this.inPlayerView = true;
-                gc.drawImage(this.tiles[tileNum].getImage(), screenX, screenY);
-            }
-            this.inPlayerView = false;
-            worldCol++;
+            boolean isVisible = (worldX + this.tileSize > player.getWorldX() - player.getScreenX() &&
+                    worldX - this.tileSize < player.getWorldX() + player.getScreenX() + 48 &&
+                    worldY + this.tileSize > player.getWorldY() - player.getScreenY() &&
+                    worldY - this.tileSize < player.getWorldY() + player.getScreenY() + 48);
 
+            if (isVisible) {
+                gc.drawImage(this.tiles[tileNum].getImage(), screenX, screenY);
+                this.isInPlayerView = true;
+            }
+
+            for (NPC npc : npcs) {
+                double npcScreenX = screenX + npc.getWorldX() - worldX;
+                double npcScreenY = screenY + npc.getWorldY() - worldY;
+
+                if (isVisible) {
+                    npc.getCurrentFrame().setVisible(true);
+                    npc.getCurrentFrame().setTranslateX(npcScreenX);
+                    npc.getCurrentFrame().setTranslateY(npcScreenY);
+                }
+            }
+            worldCol++;
             if (worldCol == this.maxWorldCol) {
                 worldCol = 0;
                 worldRow++;
@@ -101,6 +113,6 @@ public class TileManager {
     }
 
     public boolean isInPlayerView() {
-        return this.inPlayerView;
+        return this.isInPlayerView;
     }
 }

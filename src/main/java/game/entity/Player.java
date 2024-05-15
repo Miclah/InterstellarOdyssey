@@ -10,7 +10,6 @@ import javafx.scene.shape.Rectangle;
 // TODO: Colizie s objektami
 public class Player extends Entity {
 
-    private final ImageView currentFrame;
     private Direction direction;
     private int spriteNumber;
     private int spriteCounter;
@@ -22,7 +21,6 @@ public class Player extends Entity {
     public Player(int worldX, int worldY, int speed, String name, Scene scene, KeyManager keyManager) {
         super(worldX, worldY, name, "player/skin/player");
         this.speed = speed;
-        this.currentFrame = new ImageView(this.getFrames().get(1));
         this.screenX = scene.getWidth() / 2 - 32;
         this.screenY = scene.getHeight() / 2 - 32;
         this.getLabel().layoutXProperty().bind(scene.widthProperty().divide(2).subtract(19));
@@ -62,37 +60,33 @@ public class Player extends Entity {
         switch (this.direction) {
             case UP:
                 if (this.spriteNumber == 1) {
-                    this.currentFrame.setImage(this.getFrames().get(9));
+                    this.changeImage(this.getFrames().get(9));
                 } else {
-                    this.currentFrame.setImage(this.getFrames().get(11));
+                    this.changeImage(this.getFrames().get(11));
                 }
                 break;
             case DOWN:
                 if (this.spriteNumber == 1) {
-                    this.currentFrame.setImage(this.getFrames().get(0));
+                    this.changeImage(this.getFrames().getFirst());
                 } else {
-                    this.currentFrame.setImage(this.getFrames().get(2));
+                    this.changeImage(this.getFrames().get(2));
                 }
                 break;
             case LEFT:
                 if (this.spriteNumber == 1) {
-                    this.currentFrame.setImage(this.getFrames().get(3));
+                    this.changeImage(this.getFrames().get(3));
                 } else {
-                    this.currentFrame.setImage(this.getFrames().get(5));
+                    this.changeImage(this.getFrames().get(5));
                 }
                 break;
             case RIGHT:
                 if (this.spriteNumber == 1) {
-                    this.currentFrame.setImage(this.getFrames().get(6));
+                    this.changeImage(this.getFrames().get(6));
                 } else {
-                    this.currentFrame.setImage(this.getFrames().get(8));
+                    this.changeImage(this.getFrames().get(8));
                 }
                 break;
         }
-    }
-
-    public ImageView getImageView() {
-        return this.currentFrame;
     }
 
     public double getScreenY() {

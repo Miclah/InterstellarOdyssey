@@ -3,6 +3,7 @@ package game.entity;
 import game.io.Loader;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
@@ -15,6 +16,7 @@ public abstract class Entity {
     private Label label;
     private Rectangle collisionRectangle;
     private ArrayList<Image> frames;
+    private ImageView currentFrame;
 
     public Entity(int worldX, int worldY, String name, String pathToImage) {
         this.worldX = worldX;
@@ -22,6 +24,7 @@ public abstract class Entity {
         this.name = name;
         this.frames = new ArrayList<>();
         this.frames = Loader.loadImages(pathToImage);
+        this.currentFrame = new ImageView(this.frames.get(1));
         this.createLabel();
     }
 
@@ -62,5 +65,21 @@ public abstract class Entity {
 
     public void setCollisionRectangle(Rectangle collisionRectangle) {
         this.collisionRectangle = collisionRectangle;
+    }
+
+    public ImageView getCurrentFrame() {
+        return this.currentFrame;
+    }
+
+    public void setCurrentFrame(ImageView currentFrame) {
+        this.currentFrame = currentFrame;
+    }
+
+    public void changeImage(Image imageToChangeTo) {
+        this.currentFrame.setImage(imageToChangeTo);
+    }
+
+    public Image getCurrentFrameImage() {
+        return this.currentFrame.getImage();
     }
 }

@@ -1,6 +1,6 @@
 package game.gui;
 
-import game.entity.Entity;
+import game.entity.GeneralShopKeeper;
 import game.entity.NPC;
 import game.entity.Player;
 import game.state.KeyManager;
@@ -27,9 +27,9 @@ public class EarthSurface {
     private final Canvas canvas;
     private final KeyManager keyManager;
     private Label pauseText;
-    private Pane pane;
-    private Scene scene;
-    private ArrayList<Entity> entities;
+    private final Pane pane;
+    private final Scene scene;
+    private ArrayList<NPC> npcs;
 
     public EarthSurface(Stage primaryStage) {
         this.primaryStage = primaryStage;
@@ -38,19 +38,25 @@ public class EarthSurface {
         this.tileManager = new TileManager();
         this.canvas = new Canvas(1216, 704);
         this.pane.getChildren().add(this.canvas);
-        this.entities = new ArrayList<>();
+        this.npcs = new ArrayList<>();
 
+        GeneralShopKeeper shopKeeper1 = new GeneralShopKeeper(49 * tileManager.getTileSize(), 49 * tileManager.getTileSize(), "npc/general/shop/shop");
+        this.npcs.add(shopKeeper1);
 
         GraphicsContext gc = this.canvas.getGraphicsContext2D();
         gc.clearRect(0, 0, this.canvas.getWidth(), this.canvas.getHeight());
         this.scene = new Scene(this.pane, 1216, 704);
         this.player = new Player(this.tileManager.getTileSize() * 50, this.tileManager.getTileSize() * 50, 10, "Janko", this.scene, this.keyManager);
-        this.pane.getChildren().addAll(this.player.getImageView(), this.player.getLabel());
-        this.player.getImageView().setTranslateX(this.player.getScreenX());
-        this.player.getImageView().setTranslateY(this.player.getScreenY());
+        this.pane.getChildren().addAll(this.player.getCurrentFrame(), this.player.getLabel());
+        this.player.getCurrentFrame().setTranslateX(this.player.getScreenX());
+        this.player.getCurrentFrame().setTranslateY(this.player.getScreenY());
         this.scene.setOnKeyPressed(this.player::update);
 
-        this.tileManager.drawTiles(gc, this.player, this.entities);
+        for (NPC npc : this.npcs) {
+            this.pane.getChildren().addAll(npc.getCurrentFrame());
+        }
+
+        this.tileManager.draw (gc, this.player, this.npcs);
         primaryStage.setScene(this.scene);
         primaryStage.centerOnScreen();
         primaryStage.show();
@@ -64,14 +70,12 @@ public class EarthSurface {
                 if (this.player.isMoving()) {
                     this.player.update(null);
                     gc.clearRect(0, 0, this.canvas.getWidth(), this.canvas.getHeight());
-                    if (this.tileManager.isInPlayerView()) {
-                        for (Entity entity : this.entities) {
-                            if (entity instanceof NPC npc) {
-                                npc.interact(this.canvas);
-                            }
-                        }
+                    this.tileManager.draw(gc, this.player, this.npcs);
+                }
+                for (NPC npc : this.npcs) {
+                    if (this.npcIsInPlayerView(npc, this.player)) {
+                        npc.interact(this.canvas);
                     }
-                    this.tileManager.drawTiles(gc, this.player, this.entities);
                 }
             } else {
                 this.displayPausedMessage();
@@ -98,5 +102,20 @@ public class EarthSurface {
             this.pane.getChildren().remove(this.pauseText);
             this.pauseText = null;
         }
+    }
+
+    private boolean npcIsInPlayerView(NPC npc, Player player) {
+        double npcX = npc.getWorldX();
+        double npcY = npc.getWorldY();
+        double playerX = player.getWorldX();
+        double playerY = player.getWorldY();
+        double playerScreenX = player.getScreenX();
+        double playerScreenY = player.getScreenY();
+        double tileSize = this.tileManager.getTileSize();
+
+        return (npcX >= playerX - playerScreenX - tileSize &&
+                npcX <= playerX - playerScreenX + 1216 + tileSize &&
+                npcY >= playerY - playerScreenY - tileSize &&
+                npcY <= playerY - playerScreenY + 704 + tileSize);
     }
 }

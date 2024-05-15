@@ -16,7 +16,7 @@ public abstract class NPC extends Entity implements Interactible {
     public NPC(int worldX, int worldY, String name, String pathToImage, String npcType, int relation) {
         super(worldX, worldY, name, pathToImage);
         this.relation = relation;
-        this.dialogue = Loader.loadDialogues("\\textures\\files\\dialogue.json", npcType);
+        this.dialogue = Loader.loadDialogues("src/main/resources/textures/files/dialogue.json", npcType);
     }
 
     public HashMap<RelationshipType, ArrayList<String>> getDialogue() {
@@ -47,15 +47,19 @@ public abstract class NPC extends Entity implements Interactible {
     }
 
     public RelationshipType getRelationType() {
-        return RelationshipType.values()[this.relation];
+        int interval = 100 / (RelationshipType.values().length - 1);
+        int index = this.relation / interval;
+        return RelationshipType.values()[index];
     }
 
     @Override
     public void interact(Canvas canvas) {
+        System.out.println ("Interacted");
         double dialogX = this.getWorldX() + 50;
         double dialogY = this.getWorldY() - 50;
+        super.getWorldX();
         GraphicsContext gc = canvas.getGraphicsContext2D();
-        DialogBox.draw(gc, this.getMessage(), dialogX, dialogY);
+        DialogBox.drawDialog(gc, this.getMessage(), dialogX, dialogY);
     }
 
     public String getMessage() {

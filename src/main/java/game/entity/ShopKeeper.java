@@ -40,11 +40,6 @@ public abstract class ShopKeeper extends NPC implements Talkable{
     }
 
     @Override
-    public void interact(Canvas canvas) {
-        // TODO
-    }
-
-    @Override
     public void talk(Canvas canvas) {
         // TODO
     }
