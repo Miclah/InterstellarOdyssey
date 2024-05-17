@@ -1,17 +1,17 @@
 package game.entity;
 
+import game.state.GeneralManager;
 import game.things.ShopInventory;
 import javafx.scene.canvas.Canvas;
-import java.util.ArrayList;
 
-public abstract class ShopKeeper extends NPC implements Talkable{
+public abstract class ShopKeeper extends NPC implements Interactible{
 
     private double discount;
     private boolean sale;
     private ShopInventory inventory;
 
-    public ShopKeeper(int worldX, int worldY, String name, String pathToImage, int relation) {
-        super(worldX, worldY, name, pathToImage, "SHOPKEEPER", relation);
+    public ShopKeeper(int worldX, int worldY, String name, String pathToImage, int relation, GeneralManager manager) {
+        super(worldX, worldY, name, pathToImage, "SHOPKEEPER", relation, 5, manager);
         this.discount = 0;
         this.sale = false;
         this.inventory = new ShopInventory();
@@ -40,7 +40,7 @@ public abstract class ShopKeeper extends NPC implements Talkable{
     }
 
     @Override
-    public void talk(Canvas canvas) {
-        // TODO
+    public void interact(Canvas canvas, Player player) {
+
     }
 }

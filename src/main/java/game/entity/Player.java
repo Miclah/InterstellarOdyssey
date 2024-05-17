@@ -1,91 +1,117 @@
 package game.entity;
 
+import game.state.GeneralManager;
 import game.state.KeyManager;
 import game.util.Direction;
 import javafx.scene.Scene;
-import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.shape.Rectangle;
+import javafx.scene.layout.Pane;
 
-// TODO: Colizie s objektami
 public class Player extends Entity {
 
-    private Direction direction;
     private int spriteNumber;
     private int spriteCounter;
-    private final int speed;
+    private double currentSpeed;
     private final double screenX;
     private final double screenY;
     private final KeyManager keyManager;
+    private GeneralManager manager;
 
-    public Player(int worldX, int worldY, int speed, String name, Scene scene, KeyManager keyManager) {
-        super(worldX, worldY, name, "player/skin/player");
-        this.speed = speed;
+    public Player(int worldX, int worldY, int speed, String name, Scene scene, KeyManager keyManager, GeneralManager manager) {
+        super(worldX, worldY, name, "player/skin/player", speed, manager);
+        this.currentSpeed = 0;
         this.screenX = scene.getWidth() / 2 - 32;
         this.screenY = scene.getHeight() / 2 - 32;
-        this.getLabel().layoutXProperty().bind(scene.widthProperty().divide(2).subtract(19));
-        this.getLabel().layoutYProperty().bind(scene.heightProperty().divide(2).subtract(56));
-        this.setCollisionRectangle(new Rectangle(14, 28, 32, 32));
         this.keyManager = keyManager;
+        this.manager = manager;
+        scene.setOnKeyPressed(this.keyManager::handleKeyPressed);
+        scene.setOnKeyReleased(this.keyManager::handleKeyReleased);
     }
 
-    public void update(KeyEvent event) {
-        if (event != null) {
-            this.keyManager.handleKeyPressed(event);
-            if (this.keyManager.isMoving() && !this.keyManager.isPaused()) {
-                this.direction = this.keyManager.getCurrentDirection();
-                if (this.direction != null) {
-                    switch (this.direction) {
-                        case UP -> this.setWorldY(this.getWorldY() - this.speed);
-                        case DOWN -> this.setWorldY(this.getWorldY() + this.speed);
-                        case LEFT -> this.setWorldX(this.getWorldX() - this.speed);
-                        case RIGHT -> this.setWorldX(this.getWorldX() + this.speed);
+    public void update() {
+        if (this.keyManager.isMoving() && !this.keyManager.isPaused()) {
+            super.setDirection(this.keyManager.getCurrentDirection());
+            if (super.getDirection() != null) {
+                this.currentSpeed = Math.min(this.currentSpeed + 0.1, super.getBaseSpeed());
+
+                double moveX = 0;
+                double moveY = 0;
+
+                switch (super.getDirection()) {
+                    case UP -> moveY = -this.currentSpeed;
+                    case DOWN -> moveY = this.currentSpeed;
+                    case LEFT -> moveX = -this.currentSpeed;
+                    case RIGHT -> moveX = this.currentSpeed;
+                    case UP_LEFT -> {
+                        moveY = -this.currentSpeed / Math.sqrt(2);
+                        moveX = -this.currentSpeed / Math.sqrt(2);
                     }
-                    this.spriteCounter++;
-                    if (this.spriteCounter > 2) {
-                        if (this.spriteNumber == 1) {
-                            this.spriteNumber = 2;
-                        } else {
-                            this.spriteNumber = 1;
-                        }
-                        this.spriteCounter = 0;
+                    case UP_RIGHT -> {
+                        moveY = -this.currentSpeed / Math.sqrt(2);
+                        moveX = this.currentSpeed / Math.sqrt(2);
                     }
-                    this.changeFrame();
+                    case DOWN_LEFT -> {
+                        moveY = this.currentSpeed / Math.sqrt(2);
+                        moveX = -this.currentSpeed / Math.sqrt(2);
+                    }
+                    case DOWN_RIGHT -> {
+                        moveY = this.currentSpeed / Math.sqrt(2);
+                        moveX = this.currentSpeed / Math.sqrt(2);
+                    }
                 }
+
+                super.setCollision(false);
+                this.manager.getCollision().check(this);
+                System.out.println (super.isCollision());
+                if (!super.isCollision()) {
+                    super.setWorldX(super.getWorldX() + moveX);
+                    super.setWorldY(super.getWorldY() + moveY);
+                }
+
+                this.spriteCounter++;
+                if (this.spriteCounter > 15) {
+                    this.spriteNumber = this.spriteNumber == 1 ? 2 : 1;
+                    this.spriteCounter = 0;
+                }
+                this.changeFrame();
             }
+        } else {
+            this.currentSpeed = Math.max(this.currentSpeed - 0.2, 0);
         }
     }
 
     public void changeFrame() {
-        switch (this.direction) {
-            case UP:
+        if (super.getDirection() == null) {
+            return;
+        }
+        switch (super.getDirection()) {
+            case UP, UP_LEFT, UP_RIGHT -> {
                 if (this.spriteNumber == 1) {
-                    this.changeImage(this.getFrames().get(9));
+                    super.changeImage(super.getFrames().get(9));
                 } else {
-                    this.changeImage(this.getFrames().get(11));
+                    super.changeImage(super.getFrames().get(11));
                 }
-                break;
-            case DOWN:
+            }
+            case DOWN, DOWN_LEFT, DOWN_RIGHT -> {
                 if (this.spriteNumber == 1) {
-                    this.changeImage(this.getFrames().getFirst());
+                    super.changeImage(super.getFrames().getFirst());
                 } else {
-                    this.changeImage(this.getFrames().get(2));
+                    super.changeImage(super.getFrames().get(2));
                 }
-                break;
-            case LEFT:
+            }
+            case LEFT -> {
                 if (this.spriteNumber == 1) {
-                    this.changeImage(this.getFrames().get(3));
+                    super.changeImage(super.getFrames().get(3));
                 } else {
-                    this.changeImage(this.getFrames().get(5));
+                    super.changeImage(super.getFrames().get(5));
                 }
-                break;
-            case RIGHT:
+            }
+            case RIGHT -> {
                 if (this.spriteNumber == 1) {
-                    this.changeImage(this.getFrames().get(6));
+                    super.changeImage(super.getFrames().get(6));
                 } else {
-                    this.changeImage(this.getFrames().get(8));
+                    super.changeImage(super.getFrames().get(8));
                 }
-                break;
+            }
         }
     }
 

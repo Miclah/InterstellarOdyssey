@@ -1,6 +1,7 @@
 package game.things;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class ShopInventory {
     private ArrayList<Thing> inventory;
@@ -10,7 +11,7 @@ public class ShopInventory {
     }
 
     public ArrayList<Thing> getInventory() {
-        return this.inventory; // vytvorit novy arraylist inak porusi zapuzdrenie?
+        return (ArrayList<Thing>) Collections.unmodifiableList(this.inventory);
     }
 
     public void addItem(Thing thing) {

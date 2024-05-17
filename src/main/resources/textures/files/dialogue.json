@@ -1,56 +1,56 @@
 {
   "GENERAL": {
     "HOSTILE": [
-      "Begone, stranger!",
-      "Don't make me hurt you!",
+      "Get lost, stranger!",
+      "Begone, intruder!",
       "You're not welcome here!"
     ],
     "UNFRIENDLY": [
-      "You again? What do you want now?",
-      "Don't do something stupid.",
-      "I don't trust your kind."
+      "State your purpose!",
+      "What do you want now?",
+      "Don't waste my time!"
     ],
     "NEUTRAL": [
-      "Welcome, traveler.",
-      "How you doing?",
-      "What do you want? I'm busy."
+      "Greetings, traveler.",
+      "Good day, stranger.",
+      "How may I assist you?"
     ],
     "FRIENDLY": [
-      "Good day, friend!",
-      "Hey friendo!",
-      "Always a pleasure to see you."
+      "Welcome, friend!",
+      "Good to see you here!",
+      "What brings you today?"
     ],
     "ALLY": [
       "Greetings, comrade!",
-      "Anything you need, just ask.",
-      "You're practically family now."
+      "You are like family to me.",
+      "Count on me, always."
     ]
   },
   "SHOPKEEPER": {
     "HOSTILE": [
-      "I won't do business with you!",
-      "Get out of my shop!",
-      "Your kind is not welcome here!"
+      "Out of my shop!",
+      "No entry allowed!",
+      "You're not welcome!"
     ],
     "UNFRIENDLY": [
-      "Prices are higher for troublemakers like you.",
-      "What do you want? I'm busy.",
-      "I'm watching you closely."
+      "Whatcha want?",
+      "Can I help you with something?",
+      "Make it quick, I am busy!"
     ],
     "NEUTRAL": [
-      "Welcome to my shop.",
-      "Feel free to take a look around.",
-      "Can I help you find something?"
+      "Welcome to my store",
+      "Lookin for anything specific?",
+      "Good day, shopper."
     ],
     "FRIENDLY": [
-      "Good to see you again, valued customer!",
-      "Here's a special discount, just for you.",
-      "I appreciate your business."
+      "Welcome back valued customer!",
+      "Enjoy your shopping experience!",
+      "How can I help you?"
     ],
     "ALLY": [
-      "My friend! What can I do for you today?",
-      "You're like family to me. Take whatever you need.",
-      "The best prices in town, just for you."
+      "Good to see you!",
+      "Special offers just for you!",
+      "You're part of the shop family!"
     ]
   }
 }

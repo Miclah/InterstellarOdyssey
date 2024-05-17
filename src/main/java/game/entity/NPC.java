@@ -2,25 +2,27 @@ package game.entity;
 
 import game.gui.DialogBox;
 import game.io.Loader;
-import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.canvas.Canvas;
-
+import game.state.GeneralManager;
+import javafx.scene.layout.Pane;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 
-public abstract class NPC extends Entity implements Interactible {
+public abstract class NPC extends Entity implements Talkable, Wandarable {
 
     private HashMap<RelationshipType, ArrayList<String>> dialogue;
     private int relation;
+    private boolean alreadyDisplayed = false;
+    private DialogBox dialogBox;
 
-    public NPC(int worldX, int worldY, String name, String pathToImage, String npcType, int relation) {
-        super(worldX, worldY, name, pathToImage);
+    public NPC(int worldX, int worldY, String name, String pathToImage, String npcType, int relation, int speed, GeneralManager manager) {
+        super(worldX, worldY, name, pathToImage, speed, manager);
         this.relation = relation;
         this.dialogue = Loader.loadDialogues("src/main/resources/textures/files/dialogue.json", npcType);
     }
 
     public HashMap<RelationshipType, ArrayList<String>> getDialogue() {
-        return this.dialogue; // vytvorit novy hashmap inak porusi zapuzdrenie?
+        return (HashMap<RelationshipType, ArrayList<String>>) Collections.unmodifiableMap(this.dialogue);
     }
 
     public void setDialogue(HashMap<RelationshipType, ArrayList<String>> dialogue) {
@@ -53,13 +55,14 @@ public abstract class NPC extends Entity implements Interactible {
     }
 
     @Override
-    public void interact(Canvas canvas) {
-        System.out.println ("Interacted");
-        double dialogX = this.getWorldX() + 50;
-        double dialogY = this.getWorldY() - 50;
-        super.getWorldX();
-        GraphicsContext gc = canvas.getGraphicsContext2D();
-        DialogBox.drawDialog(gc, this.getMessage(), dialogX, dialogY);
+    public void talk(Pane pane, Player player) {
+        double npcScreenX = super.getWorldX() - player.getWorldX() + player.getScreenX();
+        double npcScreenY = super.getWorldY() - player.getWorldY() + player.getScreenY();
+        if (!this.alreadyDisplayed) {
+            this.dialogBox = new DialogBox(pane, this.getMessage(), "textures/dialogue/5.png", npcScreenX, npcScreenY);
+            this.alreadyDisplayed = true;
+        }
+        this.dialogBox.setCoordinates(npcScreenX, npcScreenY);
     }
 
     public String getMessage() {
@@ -71,5 +74,18 @@ public abstract class NPC extends Entity implements Interactible {
         } else {
             return "";
         }
+    }
+
+    @Override
+    public void resetTalk() {
+        this.alreadyDisplayed = false;
+    }
+
+    @Override
+    public void wander() {
+        double newX = super.getWorldX() + (Math.random() * 5 - 1);
+        double newY = super.getWorldY() + (Math.random() * 5 - 1);
+        super.setWorldX(newX);
+        super.setWorldY(newY);
     }
 }

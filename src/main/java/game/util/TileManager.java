@@ -37,6 +37,9 @@ public class TileManager {
             } else {
                 this.tiles[i] = new Tile();
                 this.tiles[i].setImage(image);
+                if (filename.contains("water")) {
+                    this.tiles[i].setColision(true);
+                }
             }
         }
     }
@@ -51,7 +54,7 @@ public class TileManager {
 
             while (col < this.maxWorldCol && row < this.maxWorldRow) {
                 String line = scanner.nextLine();
-                while (col < maxWorldCol) {
+                while (col < this.maxWorldCol) {
                     String[] numbers = line.split(" ");
                     int num = Integer.parseInt(numbers[col]);
                     this.mapTiles[col][row] = num;
@@ -110,6 +113,14 @@ public class TileManager {
 
     public int getTileSize() {
         return this.tileSize;
+    }
+
+    public int getMapTile(int number1, int number2) {
+        return this.mapTiles[number1][number2];
+    }
+
+    public Tile getTile(int number) {
+        return this.tiles[number];
     }
 
     public boolean isInPlayerView() {

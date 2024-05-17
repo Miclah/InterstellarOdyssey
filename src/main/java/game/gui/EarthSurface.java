@@ -3,6 +3,7 @@ package game.gui;
 import game.entity.GeneralShopKeeper;
 import game.entity.NPC;
 import game.entity.Player;
+import game.state.GeneralManager;
 import game.state.KeyManager;
 import game.util.TileManager;
 import javafx.animation.Animation;
@@ -35,25 +36,26 @@ public class EarthSurface {
         this.primaryStage = primaryStage;
         this.keyManager = new KeyManager();
         this.pane = new Pane();
-        this.tileManager = new TileManager();
+        GeneralManager manager = new GeneralManager();
+        manager.createTileManger();
+        this.tileManager = manager.getTileManager();
         this.canvas = new Canvas(1216, 704);
         this.pane.getChildren().add(this.canvas);
         this.npcs = new ArrayList<>();
 
-        GeneralShopKeeper shopKeeper1 = new GeneralShopKeeper(49 * tileManager.getTileSize(), 49 * tileManager.getTileSize(), "npc/general/shop/shop");
+        GeneralShopKeeper shopKeeper1 = new GeneralShopKeeper(49 * this.tileManager.getTileSize(), 49 * this.tileManager.getTileSize(), "npc/general/shop/shop", manager);
         this.npcs.add(shopKeeper1);
 
         GraphicsContext gc = this.canvas.getGraphicsContext2D();
         gc.clearRect(0, 0, this.canvas.getWidth(), this.canvas.getHeight());
         this.scene = new Scene(this.pane, 1216, 704);
-        this.player = new Player(this.tileManager.getTileSize() * 50, this.tileManager.getTileSize() * 50, 10, "Janko", this.scene, this.keyManager);
+        this.player = new Player(this.tileManager.getTileSize() * 50, this.tileManager.getTileSize() * 50, 7, "Janko", this.scene, this.keyManager, manager);
         this.pane.getChildren().addAll(this.player.getCurrentFrame(), this.player.getLabel());
         this.player.getCurrentFrame().setTranslateX(this.player.getScreenX());
         this.player.getCurrentFrame().setTranslateY(this.player.getScreenY());
-        this.scene.setOnKeyPressed(this.player::update);
 
         for (NPC npc : this.npcs) {
-            this.pane.getChildren().addAll(npc.getCurrentFrame());
+            this.pane.getChildren().addAll(npc.getCurrentFrame(), npc.getLabel());
         }
 
         this.tileManager.draw (gc, this.player, this.npcs);
@@ -67,23 +69,29 @@ public class EarthSurface {
         Timeline gameLoop = new Timeline(new KeyFrame(Duration.seconds(1.0 / 60), e -> {
             if (!this.keyManager.isPaused()) {
                 this.hidePauseMessage();
-                if (this.player.isMoving()) {
-                    this.player.update(null);
-                    gc.clearRect(0, 0, this.canvas.getWidth(), this.canvas.getHeight());
-                    this.tileManager.draw(gc, this.player, this.npcs);
-                }
-                for (NPC npc : this.npcs) {
-                    if (this.npcIsInPlayerView(npc, this.player)) {
-                        npc.interact(this.canvas);
-                    }
-                }
+                this.player.update();
+                this.player.updateLabelPosition(this.player.getScreenX(), this.player.getScreenY());
+                gc.clearRect(0, 0, this.canvas.getWidth(), this.canvas.getHeight());
+                this.tileManager.draw(gc, this.player, this.npcs);
             } else {
                 this.displayPausedMessage();
+            }
+            for (NPC npc : this.npcs) {
+                double npcScreenX = npc.getWorldX() - this.player.getWorldX() + this.player.getScreenX();
+                double npcScreenY = npc.getWorldY() - this.player.getWorldY() + this.player.getScreenY();
+                npc.updateLabelPosition(npcScreenX, npcScreenY);
+                npc.wander();
+                if (this.npcIsInPlayerView(npc, this.player)) {
+                    npc.talk(this.pane, this.player);
+                } else {
+                    npc.resetTalk();
+                }
             }
         }));
         gameLoop.setCycleCount(Animation.INDEFINITE);
         gameLoop.play();
     }
+
 
     private void displayPausedMessage() {
         if (this.pauseText == null) {

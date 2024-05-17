@@ -8,11 +8,19 @@ public class KeyManager {
     private Direction currentDirection;
     private boolean paused;
     private boolean isMoving;
+    private boolean wDown;
+    private boolean aDown;
+    private boolean sDown;
+    private boolean dDown;
 
     public KeyManager() {
         this.currentDirection = Direction.DOWN;
         this.paused = false;
         this.isMoving = false;
+        this.wDown = false;
+        this.aDown = false;
+        this.sDown = false;
+        this.dDown = false;
     }
 
     public void handleKeyPressed(KeyEvent event) {
@@ -20,25 +28,53 @@ public class KeyManager {
             this.paused = !this.paused;
             return;
         }
+
         if (!this.paused) {
-            if (event.getCode() == KeyCode.W || event.getCode() == KeyCode.A
-                    || event.getCode() == KeyCode.S || event.getCode() == KeyCode.D) {
-                this.isMoving = true;
-                switch (event.getCode()) {
-                    case W:
-                        this.currentDirection = Direction.UP;
-                        break;
-                    case S:
-                        this.currentDirection = Direction.DOWN;
-                        break;
-                    case A:
-                        this.currentDirection = Direction.LEFT;
-                        break;
-                    case D:
-                        this.currentDirection = Direction.RIGHT;
-                        break;
-                }
+            switch (event.getCode()) {
+                case W -> this.wDown = true;
+                case A -> this.aDown = true;
+                case S -> this.sDown = true;
+                case D -> this.dDown = true;
             }
+            this.updateDirection();
+        }
+    }
+
+    public void handleKeyReleased(KeyEvent event) {
+        if (!this.paused) {
+            switch (event.getCode()) {
+                case W -> this.wDown = false;
+                case A -> this.aDown = false;
+                case S -> this.sDown = false;
+                case D -> this.dDown = false;
+            }
+            this.updateDirection();
+        }
+    }
+
+    private void updateDirection() {
+        this.isMoving = this.wDown || this.aDown || this.sDown || this.dDown;
+
+        if (this.isMoving) {
+            if (this.wDown && this.aDown) {
+                this.currentDirection = Direction.UP_LEFT;
+            } else if (this.wDown && this.dDown) {
+                this.currentDirection = Direction.UP_RIGHT;
+            } else if (this.sDown && this.aDown) {
+                this.currentDirection = Direction.DOWN_LEFT;
+            } else if (this.sDown && this.dDown) {
+                this.currentDirection = Direction.DOWN_RIGHT;
+            } else if (this.wDown) {
+                this.currentDirection = Direction.UP;
+            } else if (this.sDown) {
+                this.currentDirection = Direction.DOWN;
+            } else if (this.aDown) {
+                this.currentDirection = Direction.LEFT;
+            } else if (this.dDown) {
+                this.currentDirection = Direction.RIGHT;
+            }
+        } else {
+            this.currentDirection = null;
         }
     }
 
