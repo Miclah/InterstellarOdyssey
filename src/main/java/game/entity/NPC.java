@@ -3,10 +3,12 @@ package game.entity;
 import game.gui.DialogBox;
 import game.io.Loader;
 import game.state.GeneralManager;
+import game.util.Direction;
 import javafx.scene.layout.Pane;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Random;
 
 public abstract class NPC extends Entity implements Talkable, Wandarable {
 
@@ -14,11 +16,19 @@ public abstract class NPC extends Entity implements Talkable, Wandarable {
     private int relation;
     private boolean alreadyDisplayed = false;
     private DialogBox dialogBox;
+    private final int changeInterval = 120;
+    private int changeTimer;
+    private final int restInterval = 90;
+    private boolean isResting;
+    private int restTimer;
+    private Random random;
 
     public NPC(int worldX, int worldY, String name, String pathToImage, String npcType, int relation, int speed, GeneralManager manager) {
         super(worldX, worldY, name, pathToImage, speed, manager);
         this.relation = relation;
         this.dialogue = Loader.loadDialogues("src/main/resources/textures/files/dialogue.json", npcType);
+        this.changeTimer = 0;
+        this.random = new Random();
     }
 
     public HashMap<RelationshipType, ArrayList<String>> getDialogue() {
@@ -83,9 +93,52 @@ public abstract class NPC extends Entity implements Talkable, Wandarable {
 
     @Override
     public void wander() {
-        double newX = super.getWorldX() + (Math.random() * 5 - 1);
-        double newY = super.getWorldY() + (Math.random() * 5 - 1);
-        super.setWorldX(newX);
-        super.setWorldY(newY);
+        if (isResting) {
+            if (restTimer >= restInterval) {
+                isResting = false;
+                restTimer = 0;
+            } else {
+                performIdleAction();
+                restTimer++;
+                return;
+            }
+        }
+
+        if (this.changeTimer >= this.changeInterval) {
+            Direction nextDirection = this.getNextDirection();
+            super.setDirection(nextDirection);
+            this.changeTimer = 0;
+        } else {
+            this.changeTimer++;
+        }
+
+        super.move();
+        super.getManager().getCollision().check(this);
+    }
+
+    private Direction getNextDirection() {
+        Direction[] directions = Direction.values();
+        Direction currentDirection = super.getDirection();
+
+        Direction newDirection;
+        do {
+            newDirection = directions[random.nextInt(directions.length)];
+        } while (currentDirection != null && newDirection == currentDirection.opposite());
+
+        if (random.nextInt(10) < 2) {
+            isResting = true;
+            return null;
+        }
+
+        return newDirection;
+    }
+
+    private void performIdleAction() {
+        if (random.nextInt(2) == 0) {
+            Direction[] directions = Direction.values();
+            super.setDirection(directions[random.nextInt(directions.length)]);
+        } else {
+            super.setDirection(null);
+        }
     }
 }

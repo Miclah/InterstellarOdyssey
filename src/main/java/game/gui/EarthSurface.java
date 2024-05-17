@@ -56,6 +56,7 @@ public class EarthSurface {
 
         for (NPC npc : this.npcs) {
             this.pane.getChildren().addAll(npc.getCurrentFrame(), npc.getLabel());
+            manager.addEnitity(npc);
         }
 
         this.tileManager.draw (gc, this.player, this.npcs);

@@ -11,7 +11,7 @@ public abstract class ShopKeeper extends NPC implements Interactible{
     private ShopInventory inventory;
 
     public ShopKeeper(int worldX, int worldY, String name, String pathToImage, int relation, GeneralManager manager) {
-        super(worldX, worldY, name, pathToImage, "SHOPKEEPER", relation, 5, manager);
+        super(worldX, worldY, name, pathToImage, "SHOPKEEPER", relation, 1, manager);
         this.discount = 0;
         this.sale = false;
         this.inventory = new ShopInventory();

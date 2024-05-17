@@ -13,7 +13,7 @@ import javafx.scene.text.Font;
 
 import java.util.ArrayList;
 
-public abstract class Entity {
+public abstract class Entity implements Movable {
 
     private double worldX, worldY;
     private final String name;
@@ -24,17 +24,23 @@ public abstract class Entity {
     private Direction direction;
     private boolean collision = false;
     private final int baseSpeed;
+    private final GeneralManager manager;
+    private double currentSpeed;
+    private double spriteCounter;
+    private int spriteNumber;
 
     public Entity(int worldX, int worldY, String name, String pathToImage, int baseSpeed, GeneralManager manager) {
         this.worldX = worldX;
         this.worldY = worldY;
         this.name = name;
         this.baseSpeed = baseSpeed;
+        this.currentSpeed = 0;
         this.frames = new ArrayList<>();
         this.frames = Loader.loadImages(pathToImage);
         this.currentFrame = new ImageView(this.frames.get(1));
+        this.manager = manager;
         this.createLabel();
-        this.collisionRectangle = new Rectangle(14, 28, 32, 32);
+        this.collisionRectangle = new Rectangle(22, 32, 22, 32);
     }
 
     public void createLabel() {
@@ -63,6 +69,90 @@ public abstract class Entity {
         this.label.setLayoutY(entityY - labelHeight);
     }
 
+    @Override
+    public void move() {
+        if (this.direction != null) {
+            this.currentSpeed = Math.min(this.currentSpeed + 0.1, this.baseSpeed);
+
+            double moveX = 0;
+            double moveY = 0;
+
+            switch (this.direction) {
+                case UP -> moveY = -this.currentSpeed;
+                case DOWN -> moveY = this.currentSpeed;
+                case LEFT -> moveX = -this.currentSpeed;
+                case RIGHT -> moveX = this.currentSpeed;
+                case UP_LEFT -> {
+                    moveY = -this.currentSpeed / Math.sqrt(2);
+                    moveX = -this.currentSpeed / Math.sqrt(2);
+                }
+                case UP_RIGHT -> {
+                    moveY = -this.currentSpeed / Math.sqrt(2);
+                    moveX = this.currentSpeed / Math.sqrt(2);
+                }
+                case DOWN_LEFT -> {
+                    moveY = this.currentSpeed / Math.sqrt(2);
+                    moveX = -this.currentSpeed / Math.sqrt(2);
+                }
+                case DOWN_RIGHT -> {
+                    moveY = this.currentSpeed / Math.sqrt(2);
+                    moveX = this.currentSpeed / Math.sqrt(2);
+                }
+            }
+
+            this.collision = false;
+            this.manager.getCollision().check(this);
+            if (!this.collision) {
+                this.worldX += moveX;
+                this.worldY += moveY;
+            }
+
+            this.spriteCounter++;
+            if (this.spriteCounter > 15) {
+                this.spriteNumber = this.spriteNumber == 1 ? 2 : 1;
+                this.spriteCounter = 0;
+            }
+            this.changeFrame();
+        } else {
+            this.currentSpeed = Math.max(this.currentSpeed - 0.2, 0);
+        }
+    }
+
+    public void changeFrame() {
+        if (this.direction == null) {
+            return;
+        }
+        switch (this.direction) {
+            case UP, UP_LEFT, UP_RIGHT -> {
+                if (this.spriteNumber == 1) {
+                    this.changeImage(this.frames.get(9));
+                } else {
+                    this.changeImage(this.frames.get(11));
+                }
+            }
+            case DOWN, DOWN_LEFT, DOWN_RIGHT -> {
+                if (this.spriteNumber == 1) {
+                    this.changeImage(this.frames.getFirst());
+                } else {
+                    this.changeImage(this.frames.get(2));
+                }
+            }
+            case LEFT -> {
+                if (this.spriteNumber == 1) {
+                    this.changeImage(this.frames.get(3));
+                } else {
+                    this.changeImage(this.frames.get(5));
+                }
+            }
+            case RIGHT -> {
+                if (this.spriteNumber == 1) {
+                    this.changeImage(this.frames.get(6));
+                } else {
+                    this.changeImage(this.frames.get(8));
+                }
+            }
+        }
+    }
 
     public void setWorldX(double worldX) {
         this.worldX = worldX;
@@ -126,5 +216,9 @@ public abstract class Entity {
 
     public int getBaseSpeed() {
         return this.baseSpeed;
+    }
+
+    public GeneralManager getManager() {
+        return this.manager;
     }
 }
