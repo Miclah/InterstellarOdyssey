@@ -7,6 +7,7 @@ import javafx.scene.input.KeyEvent;
 public class KeyManager {
     private Direction currentDirection;
     private boolean paused;
+    private boolean interacted;
     private boolean isMoving;
     private boolean wDown;
     private boolean aDown;
@@ -16,6 +17,7 @@ public class KeyManager {
     public KeyManager() {
         this.currentDirection = Direction.DOWN;
         this.paused = false;
+        this.interacted = false;
         this.isMoving = false;
         this.wDown = false;
         this.aDown = false;
@@ -26,6 +28,12 @@ public class KeyManager {
     public void handleKeyPressed(KeyEvent event) {
         if (event.getCode() == KeyCode.P) {
             this.paused = !this.paused;
+            return;
+        }
+
+        if (event.getCode() == KeyCode.SPACE) {
+            this.interacted = !this.interacted;
+            System.out.println ("Interacted: " + this.interacted);
             return;
         }
 
@@ -88,5 +96,9 @@ public class KeyManager {
 
     public boolean isMoving() {
         return this.isMoving;
+    }
+
+    public void setInteracted(boolean interacted) {
+        this.interacted = interacted;
     }
 }

@@ -22,8 +22,61 @@ public class Player extends Entity {
     public void update() {
         if (this.keyManager.isMoving() && !this.keyManager.isPaused()) {
             super.setDirection(this.keyManager.getCurrentDirection());
-            super.move();
             super.getManager().getCollision().check(this);
+            this.move();
+        }
+    }
+
+    @Override
+    public void move() {
+        if (super.getDirection() != null) {
+            super.setCurrentSpeed(Math.min(super.getCurrentSpeed() + 0.1, super.getBaseSpeed()));
+
+            double moveX = 0;
+            double moveY = 0;
+
+            switch (super.getDirection()) {
+                case UP -> moveY = -super.getCurrentSpeed();
+                case DOWN -> moveY = super.getCurrentSpeed();
+                case LEFT -> moveX = -super.getCurrentSpeed();
+                case RIGHT -> moveX = super.getCurrentSpeed();
+                case UP_LEFT -> {
+                    moveY = -super.getCurrentSpeed() / Math.sqrt(2);
+                    moveX = -super.getCurrentSpeed() / Math.sqrt(2);
+                }
+                case UP_RIGHT -> {
+                    moveY = -super.getCurrentSpeed() / Math.sqrt(2);
+                    moveX = super.getCurrentSpeed() / Math.sqrt(2);
+                }
+                case DOWN_LEFT -> {
+                    moveY = super.getCurrentSpeed() / Math.sqrt(2);
+                    moveX = -super.getCurrentSpeed() / Math.sqrt(2);
+                }
+                case DOWN_RIGHT -> {
+                    moveY = super.getCurrentSpeed() / Math.sqrt(2);
+                    moveX = super.getCurrentSpeed() / Math.sqrt(2);
+                }
+            }
+
+            super.setCollision(false);
+            super.getManager().getCollision().check(this);
+            if (!super.isCollision()) {
+                super.setWorldX(super.getWorldX() + moveX);
+                super.setWorldY(super.getWorldY() + moveY);
+            }
+
+            super.setSpriteCounter(super.getSpriteCounter() + 1);
+            if (super.getSpriteCounter() > 15) {
+                if (super.getSpriteNumber() == 1) {
+                    super.setSpriteNumber(2);
+                } else {
+                    super.setSpriteNumber(1);
+                }
+                super.setSpriteCounter(0);
+            }
+            this.changeFrame();
+        } else {
+            super.setCurrentSpeed(Math.max(super.getCurrentSpeed()- 0.2, 0));
         }
     }
 

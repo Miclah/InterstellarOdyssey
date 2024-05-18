@@ -1,12 +1,12 @@
 package game.entity;
 
+import game.entity.interfazy.Movable;
 import game.io.Loader;
 import game.state.GeneralManager;
 import game.util.Direction;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
@@ -22,7 +22,7 @@ public abstract class Entity implements Movable {
     private ArrayList<Image> frames;
     private ImageView currentFrame;
     private Direction direction;
-    private boolean collision = false;
+    private boolean collision;
     private final int baseSpeed;
     private final GeneralManager manager;
     private double currentSpeed;
@@ -100,11 +100,18 @@ public abstract class Entity implements Movable {
                 }
             }
 
+            this.worldX += moveX;
+            this.worldY += moveY;
             this.collision = false;
             this.manager.getCollision().check(this);
+
             if (!this.collision) {
                 this.worldX += moveX;
                 this.worldY += moveY;
+            } else {
+                this.worldX -= moveX;
+                this.worldY -= moveY;
+                this.setDirection(this.direction.opposite());
             }
 
             this.spriteCounter++;
@@ -118,33 +125,34 @@ public abstract class Entity implements Movable {
         }
     }
 
+
     public void changeFrame() {
         if (this.direction == null) {
             return;
         }
         switch (this.direction) {
-            case UP, UP_LEFT, UP_RIGHT -> {
+            case UP -> {
                 if (this.spriteNumber == 1) {
                     this.changeImage(this.frames.get(9));
                 } else {
                     this.changeImage(this.frames.get(11));
                 }
             }
-            case DOWN, DOWN_LEFT, DOWN_RIGHT -> {
+            case DOWN -> {
                 if (this.spriteNumber == 1) {
                     this.changeImage(this.frames.getFirst());
                 } else {
                     this.changeImage(this.frames.get(2));
                 }
             }
-            case LEFT -> {
+            case LEFT, UP_LEFT, DOWN_LEFT -> {
                 if (this.spriteNumber == 1) {
                     this.changeImage(this.frames.get(3));
                 } else {
                     this.changeImage(this.frames.get(5));
                 }
             }
-            case RIGHT -> {
+            case RIGHT, DOWN_RIGHT, UP_RIGHT -> {
                 if (this.spriteNumber == 1) {
                     this.changeImage(this.frames.get(6));
                 } else {
@@ -186,6 +194,10 @@ public abstract class Entity implements Movable {
         return this.currentFrame;
     }
 
+    public String getName() {
+        return this.name;
+    }
+
     public void setCurrentFrame(ImageView currentFrame) {
         this.currentFrame = currentFrame;
     }
@@ -220,5 +232,29 @@ public abstract class Entity implements Movable {
 
     public GeneralManager getManager() {
         return this.manager;
+    }
+
+    public double getCurrentSpeed() {
+        return this.currentSpeed;
+    }
+
+    public double getSpriteCounter() {
+        return this.spriteCounter;
+    }
+
+    public int getSpriteNumber() {
+        return this.spriteNumber;
+    }
+
+    public void setCurrentSpeed(double currentSpeed) {
+        this.currentSpeed = currentSpeed;
+    }
+
+    public void setSpriteCounter(double spriteCounter) {
+        this.spriteCounter = spriteCounter;
+    }
+
+    public void setSpriteNumber(int spriteNumber) {
+        this.spriteNumber = spriteNumber;
     }
 }

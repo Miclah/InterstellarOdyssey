@@ -1,4 +1,4 @@
-package game.entity;
+package game.entity.interfazy;
 
 public interface Wandarable {
     void wander();

@@ -1,10 +1,11 @@
 package game.entity;
 
+import game.entity.interfazy.Interactible;
 import game.state.GeneralManager;
 import game.things.ShopInventory;
 import javafx.scene.canvas.Canvas;
 
-public abstract class ShopKeeper extends NPC implements Interactible{
+public abstract class ShopKeeper extends NPC implements Interactible {
 
     private double discount;
     private boolean sale;

@@ -1,5 +1,6 @@
-package game.entity;
+package game.entity.interfazy;
 
+import game.entity.Player;
 import javafx.scene.canvas.Canvas;
 
 public interface Interactible {

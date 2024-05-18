@@ -81,12 +81,27 @@ public class DialogBox {
         this.text.setTextAlignment(TextAlignment.LEFT);
     }
 
-    public void setCoordinates(double worldX, double worldY) {
+    public void setCoordinatesHumans(double worldX, double worldY) {
+        this.setCoordinates (worldX, worldY, true);
+    }
+
+    public void setCoordinatesAnimals(double worldX, double worldY) {
+        this.setCoordinates (worldX, worldY, false);
+    }
+
+    private void setCoordinates(double worldX, double worldY, boolean human) {
         if (this.imageView != null && this.text != null) {
-            this.imageView.setX(worldX - 20);
-            this.imageView.setY(worldY - 130);
-            this.text.setX(worldX + 10);
-            this.text.setY(worldY - 80);
+            if (human) {
+                this.imageView.setX(worldX - 20);
+                this.imageView.setY(worldY - 130);
+                this.text.setX(worldX + 10);
+                this.text.setY(worldY - 80);
+            } else {
+                this.imageView.setX(worldX - 20);
+                this.imageView.setY(worldY - 130);
+                this.text.setX(worldX + 67);
+                this.text.setY(worldY - 55);
+            }
         }
     }
 }

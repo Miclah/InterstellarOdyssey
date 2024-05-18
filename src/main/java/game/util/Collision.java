@@ -1,17 +1,22 @@
 package game.util;
 
 import game.entity.Entity;
+import game.entity.Player;
 import game.state.GeneralManager;
 
 public class Collision {
     private final int TILE_SIZE = 32;
     private final GeneralManager manager;
+    private final Player player;
 
-    public Collision(GeneralManager manager) {
+    public Collision(GeneralManager manager, Player player) {
         this.manager = manager;
+        this.player = player;
     }
 
     public void check(Entity entity) {
+        entity.setCollision(false);
+        this.player.setCollision(false);
         int entityLeftX = (int) (entity.getWorldX() + entity.getCollisionRectangle().getX());
         int entityRightX = (int) (entity.getWorldX() + entity.getCollisionRectangle().getX() + entity.getCollisionRectangle().getWidth());
         int entityTopY = (int) (entity.getWorldY() + entity.getCollisionRectangle().getY());
@@ -65,7 +70,8 @@ public class Collision {
         for (Entity otherEntity : this.manager.getEntities()) {
             if (otherEntity != entity && this.rectanglesOverlap (entity, otherEntity)) {
                 entity.setCollision(true);
-                break; // Exit the loop once a collision is detected
+                System.out.println("Entity: " + entity.getName() + " collides with " + otherEntity.getName());
+                break;
             }
         }
     }

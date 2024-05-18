@@ -1,5 +1,7 @@
 package game.entity;
 
+import game.entity.interfazy.Talkable;
+import game.entity.interfazy.Wandarable;
 import game.gui.DialogBox;
 import game.io.Loader;
 import game.state.GeneralManager;
@@ -16,12 +18,10 @@ public abstract class NPC extends Entity implements Talkable, Wandarable {
     private int relation;
     private boolean alreadyDisplayed = false;
     private DialogBox dialogBox;
-    private final int changeInterval = 120;
     private int changeTimer;
-    private final int restInterval = 90;
     private boolean isResting;
     private int restTimer;
-    private Random random;
+    private final Random random;
 
     public NPC(int worldX, int worldY, String name, String pathToImage, String npcType, int relation, int speed, GeneralManager manager) {
         super(worldX, worldY, name, pathToImage, speed, manager);
@@ -69,12 +69,13 @@ public abstract class NPC extends Entity implements Talkable, Wandarable {
         double npcScreenX = super.getWorldX() - player.getWorldX() + player.getScreenX();
         double npcScreenY = super.getWorldY() - player.getWorldY() + player.getScreenY();
         if (!this.alreadyDisplayed) {
-            this.dialogBox = new DialogBox(pane, this.getMessage(), "textures/dialogue/5.png", npcScreenX, npcScreenY);
+            this.dialogBox = new DialogBox(pane, this.getMessage(), "textures/dialogue/dialogue.png", npcScreenX, npcScreenY);
             this.alreadyDisplayed = true;
         }
-        this.dialogBox.setCoordinates(npcScreenX, npcScreenY);
+        this.dialogBox.setCoordinatesHumans (npcScreenX, npcScreenY);
     }
 
+    @Override
     public String getMessage() {
         RelationshipType currentType = this.getRelationType();
         ArrayList<String> messages = this.dialogue.get(currentType);
@@ -93,18 +94,20 @@ public abstract class NPC extends Entity implements Talkable, Wandarable {
 
     @Override
     public void wander() {
-        if (isResting) {
-            if (restTimer >= restInterval) {
-                isResting = false;
-                restTimer = 0;
+        if (this.isResting) {
+            int restInterval = 60;
+            if (this.restTimer >= restInterval) {
+                this.isResting = false;
+                this.restTimer = 0;
             } else {
-                performIdleAction();
-                restTimer++;
+                this.performIdleAction ();
+                this.restTimer++;
                 return;
             }
         }
 
-        if (this.changeTimer >= this.changeInterval) {
+        int changeInterval = 120;
+        if (this.changeTimer >= changeInterval) {
             Direction nextDirection = this.getNextDirection();
             super.setDirection(nextDirection);
             this.changeTimer = 0;
@@ -122,11 +125,11 @@ public abstract class NPC extends Entity implements Talkable, Wandarable {
 
         Direction newDirection;
         do {
-            newDirection = directions[random.nextInt(directions.length)];
+            newDirection = directions[this.random.nextInt(directions.length)];
         } while (currentDirection != null && newDirection == currentDirection.opposite());
 
-        if (random.nextInt(10) < 2) {
-            isResting = true;
+        if (this.random.nextInt(10) < 2) {
+            this.isResting = true;
             return null;
         }
 
@@ -134,11 +137,27 @@ public abstract class NPC extends Entity implements Talkable, Wandarable {
     }
 
     private void performIdleAction() {
-        if (random.nextInt(2) == 0) {
+        if (this.random.nextInt(2) == 0) {
             Direction[] directions = Direction.values();
-            super.setDirection(directions[random.nextInt(directions.length)]);
+            super.setDirection(directions[this.random.nextInt(directions.length)]);
         } else {
             super.setDirection(null);
         }
+    }
+
+    public boolean isAlreadyDisplayed() {
+        return this.alreadyDisplayed;
+    }
+
+    public void setAlreadyDisplayed(boolean alreadyDisplayed) {
+        this.alreadyDisplayed = alreadyDisplayed;
+    }
+
+    public void setDialogBox(DialogBox dialogBox) {
+        this.dialogBox = dialogBox;
+    }
+
+    public DialogBox getDialogBox() {
+        return this.dialogBox;
     }
 }

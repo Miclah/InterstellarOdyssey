@@ -1,10 +1,13 @@
 package game.gui;
 
+import game.entity.special.Cat;
 import game.entity.GeneralShopKeeper;
 import game.entity.NPC;
 import game.entity.Player;
+import game.io.FileWriter;
 import game.state.GeneralManager;
 import game.state.KeyManager;
+import game.util.NpcCreator;
 import game.util.TileManager;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
@@ -42,21 +45,31 @@ public class EarthSurface {
         this.canvas = new Canvas(1216, 704);
         this.pane.getChildren().add(this.canvas);
         this.npcs = new ArrayList<>();
-
-        GeneralShopKeeper shopKeeper1 = new GeneralShopKeeper(49 * this.tileManager.getTileSize(), 49 * this.tileManager.getTileSize(), "npc/general/shop/shop", manager);
-        this.npcs.add(shopKeeper1);
+        FileWriter.write();
 
         GraphicsContext gc = this.canvas.getGraphicsContext2D();
         gc.clearRect(0, 0, this.canvas.getWidth(), this.canvas.getHeight());
         this.scene = new Scene(this.pane, 1216, 704);
-        this.player = new Player(this.tileManager.getTileSize() * 50, this.tileManager.getTileSize() * 50, 7, "Janko", this.scene, this.keyManager, manager);
+        this.player = new Player(this.tileManager.getTileSize() * 50, this.tileManager.getTileSize() * 50, 5, "Janko", this.scene, this.keyManager, manager);
         this.pane.getChildren().addAll(this.player.getCurrentFrame(), this.player.getLabel());
         this.player.getCurrentFrame().setTranslateX(this.player.getScreenX());
         this.player.getCurrentFrame().setTranslateY(this.player.getScreenY());
+        manager.createCollision(this.player);
+
+        this.npcs.add(new GeneralShopKeeper(49 * this.tileManager.getTileSize(), 49 * this.tileManager.getTileSize(), "npc/general/shop/shop", manager));
+        this.npcs.add(new Cat(47 * this.tileManager.getTileSize(), 47 * this.tileManager.getTileSize(), "Optimus Prime", manager));
+        this.npcs.add(new Cat(52 * this.tileManager.getTileSize(), 52 * this.tileManager.getTileSize(), "Crack Sparrow", manager));
+        this.npcs.add(new Cat(54 * this.tileManager.getTileSize(), 54 * this.tileManager.getTileSize(), "Godzilla", manager));
+
+        int numberOfNPCs = 16;
+        for (int i = 0; i < numberOfNPCs; i++) {
+            NPC npc = NpcCreator.createRandomNPC(manager, this.tileManager);
+            this.npcs.add(npc);
+        }
 
         for (NPC npc : this.npcs) {
             this.pane.getChildren().addAll(npc.getCurrentFrame(), npc.getLabel());
-            manager.addEnitity(npc);
+            manager.addEntity(npc);
         }
 
         this.tileManager.draw (gc, this.player, this.npcs);
@@ -74,19 +87,19 @@ public class EarthSurface {
                 this.player.updateLabelPosition(this.player.getScreenX(), this.player.getScreenY());
                 gc.clearRect(0, 0, this.canvas.getWidth(), this.canvas.getHeight());
                 this.tileManager.draw(gc, this.player, this.npcs);
+                for (NPC npc : this.npcs) {
+                    double npcScreenX = npc.getWorldX() - this.player.getWorldX() + this.player.getScreenX();
+                    double npcScreenY = npc.getWorldY() - this.player.getWorldY() + this.player.getScreenY();
+                    npc.updateLabelPosition(npcScreenX, npcScreenY);
+                    npc.wander();
+                    if (this.npcIsInPlayerView(npc, this.player)) {
+                        npc.talk(this.pane, this.player);
+                    } else {
+                        npc.resetTalk();
+                    }
+                }
             } else {
                 this.displayPausedMessage();
-            }
-            for (NPC npc : this.npcs) {
-                double npcScreenX = npc.getWorldX() - this.player.getWorldX() + this.player.getScreenX();
-                double npcScreenY = npc.getWorldY() - this.player.getWorldY() + this.player.getScreenY();
-                npc.updateLabelPosition(npcScreenX, npcScreenY);
-                npc.wander();
-                if (this.npcIsInPlayerView(npc, this.player)) {
-                    npc.talk(this.pane, this.player);
-                } else {
-                    npc.resetTalk();
-                }
             }
         }));
         gameLoop.setCycleCount(Animation.INDEFINITE);
