@@ -9,12 +9,16 @@ public class Player extends Entity {
     private final double screenX;
     private final double screenY;
     private final KeyManager keyManager;
+    private int currency;
+    private double miningSpeed;
 
     public Player(int worldX, int worldY, int speed, String name, Scene scene, KeyManager keyManager, GeneralManager manager) {
         super(worldX, worldY, name, "player/skin/player", speed, manager);
         this.screenX = scene.getWidth() / 2 - 32;
         this.screenY = scene.getHeight() / 2 - 32;
         this.keyManager = keyManager;
+        this.currency = 0;
+        this.miningSpeed = 1.0;
         scene.setOnKeyPressed(this.keyManager::handleKeyPressed);
         scene.setOnKeyReleased(this.keyManager::handleKeyReleased);
     }
@@ -36,10 +40,18 @@ public class Player extends Entity {
             double moveY = 0;
 
             switch (super.getDirection()) {
-                case UP -> moveY = -super.getCurrentSpeed();
-                case DOWN -> moveY = super.getCurrentSpeed();
-                case LEFT -> moveX = -super.getCurrentSpeed();
-                case RIGHT -> moveX = super.getCurrentSpeed();
+                case UP -> {
+                    moveY = -super.getCurrentSpeed();
+                }
+                case DOWN -> {
+                    moveY = super.getCurrentSpeed();
+                }
+                case LEFT -> {
+                    moveX = -super.getCurrentSpeed();
+                }
+                case RIGHT -> {
+                    moveX = super.getCurrentSpeed();
+                }
                 case UP_LEFT -> {
                     moveY = -super.getCurrentSpeed() / Math.sqrt(2);
                     moveX = -super.getCurrentSpeed() / Math.sqrt(2);
@@ -76,7 +88,7 @@ public class Player extends Entity {
             }
             this.changeFrame();
         } else {
-            super.setCurrentSpeed(Math.max(super.getCurrentSpeed()- 0.2, 0));
+            super.setCurrentSpeed(Math.max(super.getCurrentSpeed() - 0.2, 0));
         }
     }
 
@@ -94,5 +106,27 @@ public class Player extends Entity {
 
     public boolean isPaused() {
         return this.keyManager.isPaused();
+    }
+
+    public int getCurrency() {
+        return this.currency;
+    }
+
+    public void addCurrency(int amount) {
+        this.currency += amount;
+    }
+
+    public void subtractCurrency(int amount) {
+        if (amount <= this.currency) {
+            this.currency -= amount;
+        }
+    }
+
+    public double getMiningSpeed() {
+        return this.miningSpeed;
+    }
+
+    public void setMiningSpeed(double miningSpeed) {
+        this.miningSpeed = miningSpeed;
     }
 }

@@ -4,18 +4,28 @@ import game.state.GameManager;
 import game.util.MusicPlayer;
 import game.util.Styler;
 import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.Slider;
+import javafx.scene.control.TextField;
+import javafx.scene.control.CheckBox;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.*;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
 import java.util.function.Consumer;
 
 public class Customizator {
@@ -26,8 +36,8 @@ public class Customizator {
     private int skinChoice;
     private String name;
     private int traitPoints = 15;
-    private final String PATH_TO_CSS = "/Styles/Menu/customizer.css";
-    private List<Slider> sliders = new ArrayList<>();
+    private final String pathToCss = "/Styles/Menu/customizer.css";
+    private List<Slider> sliders = new ArrayList<> ();
     private Label traitPointsLeft;
     private ChangeListener<Number> traitSliderListener;
     private MusicPlayer musicPlayer;
@@ -62,7 +72,7 @@ public class Customizator {
 
         VBox mainLayout = new VBox();
         mainLayout.getChildren().addAll(appereanceChooser, mainHBox);
-        this.appereanceScene = Styler.createScene(mainLayout, this.PATH_TO_CSS);
+        this.appereanceScene = Styler.createScene(mainLayout, this.pathToCss);
         Styler.setStage(this.primaryStage, this.appereanceScene);
 
         skinChooser1.setOnAction(e -> {
@@ -208,7 +218,7 @@ public class Customizator {
         VBox finalVBox = new VBox(30, playerInfoLabel, centerBox, buttonsBox);
         finalVBox.setAlignment(Pos.CENTER);
 
-        this.playerInfoScene = Styler.createScene(finalVBox, this.PATH_TO_CSS);
+        this.playerInfoScene = Styler.createScene(finalVBox, this.pathToCss);
         Styler.setStage(this.primaryStage, this.playerInfoScene);
     }
 
@@ -259,7 +269,7 @@ public class Customizator {
         VBox abilitiesLayout = new VBox(20, abilityInfoLabel, abilitiesGrid, backButton);
         abilitiesLayout.setAlignment(Pos.CENTER);
 
-        this.abilityInfoScene = Styler.createScene(abilitiesLayout, this.PATH_TO_CSS);
+        this.abilityInfoScene = Styler.createScene(abilitiesLayout, this.pathToCss);
         Styler.setStage(this.primaryStage, this.abilityInfoScene);
     }
 
@@ -294,12 +304,12 @@ public class Customizator {
     private ChangeListener<Number> createTraitSliderListener() {
         // TODO: When traitPoints hits 0 the sliders shouldnt move to a higher value
         return (observable, oldValue, newValue) -> {
-            int totalSliderValue = this.sliders.stream().mapToInt(slider -> (int) slider.getValue()).sum();
+            int totalSliderValue = this.sliders.stream().mapToInt(slider -> (int)slider.getValue()).sum();
             int usedTraitPoints = totalSliderValue - this.sliders.size();
             int remainingTraitPoints = this.traitPoints - usedTraitPoints;
             this.traitPointsLeft.setText(String.valueOf(remainingTraitPoints));
             if (observable instanceof Slider) {
-                Slider sourceSlider = (Slider) observable;
+                Slider sourceSlider = (Slider)observable;
                 int difference = newValue.intValue() - oldValue.intValue();
                 if (difference > 0) {
                     if (this.traitPoints - difference >= 0) {

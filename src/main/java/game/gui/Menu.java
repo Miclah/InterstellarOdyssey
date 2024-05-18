@@ -28,7 +28,7 @@ public class Menu {
     private Scene optionsScene;
     private Scene aboutScene;
     private Scene settingsScene;
-    private final String PATH_TO_CSS = "/Styles/Menu/menu.css";
+    private final String pathToCss = "/Styles/Menu/menu.css";
 
     public Menu(Stage primaryStage) {
         this.primaryStage = primaryStage;
@@ -39,7 +39,7 @@ public class Menu {
     private void displayMain() {
         Image icon = new Image("file:src/main/resources/other/icon.png");
         this.primaryStage.getIcons().add(icon);
-        HashMap<String, String> tracks = new HashMap<String, String>();
+        HashMap<String, String> tracks = new HashMap<>();
         tracks.put("menu", "music/menu.mp3");
         MusicPlayer musicPlayer = new MusicPlayer(tracks);
         musicPlayer.playMusic("src\\main\\resources\\Music\\menu.mp3");
@@ -56,7 +56,7 @@ public class Menu {
 
         VBox vBox = Styler.createVBox(buttons);
         vBox.setAlignment(Pos.CENTER);
-        this.mainMenuScene = Styler.createScene(vBox, this.PATH_TO_CSS);
+        this.mainMenuScene = Styler.createScene(vBox, this.pathToCss);
 
         this.primaryStage.setResizable(false);
         this.primaryStage.setOnCloseRequest(e -> this.primaryStage.close());
@@ -84,7 +84,7 @@ public class Menu {
 
         VBox vBox = Styler.createVBox(buttons);
         vBox.setAlignment(Pos.CENTER);
-        this.optionsScene = Styler.createScene(vBox, this.PATH_TO_CSS);
+        this.optionsScene = Styler.createScene(vBox, this.pathToCss);
         this.primaryStage.setScene(this.optionsScene);
     }
 
@@ -140,7 +140,7 @@ public class Menu {
 
         Text gameVersionTitle = new Text("Version:\n");
         gameVersionTitle.setStyle("-fx-font-weight: bold; -fx-font-size: 20; -fx-fill: #fff;");
-        Text gameVersionText = new Text("0.1");
+        Text gameVersionText = new Text("0.4");
         gameVersionText.setStyle("-fx-font-size: 20; -fx-fill: #fff;");
 
         textFlow.getChildren().addAll(gameOverviewTitle, gameOverviewText, gameElementsTitle, gameElementsText, gameRulesTitle, gameRulesText, gameAuthorTitle, gameAuthorText, gameVersionTitle, gameVersionText);
@@ -151,7 +151,7 @@ public class Menu {
 
         vBox.getChildren().addAll(scrollPane, back.get(0));
 
-        this.aboutScene = Styler.createScene(vBox, this.PATH_TO_CSS);
+        this.aboutScene = Styler.createScene(vBox, this.pathToCss);
         this.primaryStage.setScene(this.aboutScene);
     }
 
@@ -162,9 +162,8 @@ public class Menu {
         back.getLast().setOnAction(e -> this.primaryStage.setScene(this.optionsScene));
         VBox vBox = Styler.createVBox(back);
         vBox.setAlignment(Pos.CENTER);
-        this.settingsScene = Styler.createScene(vBox, this.PATH_TO_CSS);
+        this.settingsScene = Styler.createScene(vBox, this.pathToCss);
         this.primaryStage.setScene(this.settingsScene);
-        System.out.println(RelationshipType.HOSTILE.getValue());;
+        System.out.println(RelationshipType.HOSTILE.getValue());
     }
 }
-

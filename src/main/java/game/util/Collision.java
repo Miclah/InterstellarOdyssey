@@ -5,7 +5,7 @@ import game.entity.Player;
 import game.state.GeneralManager;
 
 public class Collision {
-    private final int TILE_SIZE = 32;
+    private final int tileSize = 32;
     private final GeneralManager manager;
     private final Player player;
 
@@ -17,23 +17,24 @@ public class Collision {
     public void check(Entity entity) {
         entity.setCollision(false);
         this.player.setCollision(false);
-        int entityLeftX = (int) (entity.getWorldX() + entity.getCollisionRectangle().getX());
-        int entityRightX = (int) (entity.getWorldX() + entity.getCollisionRectangle().getX() + entity.getCollisionRectangle().getWidth());
-        int entityTopY = (int) (entity.getWorldY() + entity.getCollisionRectangle().getY());
-        int entityBottomY = (int) (entity.getWorldY() + entity.getCollisionRectangle().getY() + entity.getCollisionRectangle().getHeight());
+        int entityLeftX = (int)(entity.getWorldX() + entity.getCollisionRectangle().getX());
+        int entityRightX = (int)(entity.getWorldX() + entity.getCollisionRectangle().getX() + entity.getCollisionRectangle().getWidth());
+        int entityTopY = (int)(entity.getWorldY() + entity.getCollisionRectangle().getY());
+        int entityBottomY = (int)(entity.getWorldY() + entity.getCollisionRectangle().getY() + entity.getCollisionRectangle().getHeight());
 
-        int entityLeftCol = entityLeftX / this.TILE_SIZE;
-        int entityRightCol = entityRightX / this.TILE_SIZE;
-        int entityTopRow = entityTopY / this.TILE_SIZE;
-        int entityBottomRow = entityBottomY / this.TILE_SIZE;
+        int entityLeftCol = entityLeftX / this.tileSize;
+        int entityRightCol = entityRightX / this.tileSize;
+        int entityTopRow = entityTopY / this.tileSize;
+        int entityBottomRow = entityBottomY / this.tileSize;
 
-        int tilenum1, tilenum2;
+        int tilenum1;
+        int tilenum2;
 
         Direction direction = entity.getDirection();
         if (direction != null) {
             switch (direction) {
                 case UP, UP_LEFT, UP_RIGHT:
-                    entityTopRow = (entityTopY - entity.getBaseSpeed()) / this.TILE_SIZE;
+                    entityTopRow = (entityTopY - entity.getBaseSpeed()) / this.tileSize;
                     tilenum1 = this.manager.getTileManager().getMapTile(entityLeftCol, entityTopRow);
                     tilenum2 = this.manager.getTileManager().getMapTile(entityRightCol, entityTopRow);
                     if (this.manager.getTileManager().getTile(tilenum1).isCollision() || this.manager.getTileManager().getTile(tilenum2).isCollision()) {
@@ -41,7 +42,7 @@ public class Collision {
                     }
                     break;
                 case DOWN, DOWN_LEFT, DOWN_RIGHT:
-                    entityBottomRow = (entityBottomY + entity.getBaseSpeed()) / this.TILE_SIZE;
+                    entityBottomRow = (entityBottomY + entity.getBaseSpeed()) / this.tileSize;
                     tilenum1 = this.manager.getTileManager().getMapTile(entityLeftCol, entityBottomRow);
                     tilenum2 = this.manager.getTileManager().getMapTile(entityRightCol, entityBottomRow);
                     if (this.manager.getTileManager().getTile(tilenum1).isCollision() || this.manager.getTileManager().getTile(tilenum2).isCollision()) {
@@ -49,7 +50,7 @@ public class Collision {
                     }
                     break;
                 case LEFT:
-                    entityLeftCol = (entityLeftX - entity.getBaseSpeed()) / this.TILE_SIZE;
+                    entityLeftCol = (entityLeftX - entity.getBaseSpeed()) / this.tileSize;
                     tilenum1 = this.manager.getTileManager().getMapTile(entityLeftCol, entityTopRow);
                     tilenum2 = this.manager.getTileManager().getMapTile(entityLeftCol, entityBottomRow);
                     if (this.manager.getTileManager().getTile(tilenum1).isCollision() || this.manager.getTileManager().getTile(tilenum2).isCollision()) {
@@ -57,7 +58,7 @@ public class Collision {
                     }
                     break;
                 case RIGHT:
-                    entityRightCol = (entityRightX + entity.getBaseSpeed()) / this.TILE_SIZE;
+                    entityRightCol = (entityRightX + entity.getBaseSpeed()) / this.tileSize;
                     tilenum1 = this.manager.getTileManager().getMapTile(entityRightCol, entityTopRow);
                     tilenum2 = this.manager.getTileManager().getMapTile(entityRightCol, entityBottomRow);
                     if (this.manager.getTileManager().getTile(tilenum1).isCollision() || this.manager.getTileManager().getTile(tilenum2).isCollision()) {

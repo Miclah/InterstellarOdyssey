@@ -32,7 +32,7 @@ public abstract class NPC extends Entity implements Talkable, Wandarable {
     }
 
     public HashMap<RelationshipType, ArrayList<String>> getDialogue() {
-        return (HashMap<RelationshipType, ArrayList<String>>) Collections.unmodifiableMap(this.dialogue);
+        return (HashMap<RelationshipType, ArrayList<String>>)Collections.unmodifiableMap(this.dialogue);
     }
 
     public void setDialogue(HashMap<RelationshipType, ArrayList<String>> dialogue) {
@@ -80,7 +80,7 @@ public abstract class NPC extends Entity implements Talkable, Wandarable {
         RelationshipType currentType = this.getRelationType();
         ArrayList<String> messages = this.dialogue.get(currentType);
         if (!messages.isEmpty()) {
-            int randomIndex = (int) (Math.random() * messages.size());
+            int randomIndex = (int)(Math.random() * messages.size());
             return messages.get(randomIndex);
         } else {
             return "";

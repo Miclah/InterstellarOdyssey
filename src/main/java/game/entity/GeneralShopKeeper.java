@@ -5,7 +5,7 @@ import game.state.GeneralManager;
 
 public class GeneralShopKeeper extends ShopKeeper {
 
-    public GeneralShopKeeper(int worldX, int worldY, String pathToImage, GeneralManager manager) {
-        super(worldX, worldY, "General Store", pathToImage, 100, manager);
+    public GeneralShopKeeper(int worldX, int worldY, GeneralManager manager) {
+        super(worldX, worldY, "General Store", "npc/general/shop/shop", 50, manager);
     }
 }

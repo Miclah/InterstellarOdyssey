@@ -3,8 +3,8 @@ package game.io;
 import game.entity.RelationshipType;
 import javafx.scene.image.Image;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
+import java.io.DataInputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -46,5 +46,19 @@ public class Loader {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public static ArrayList<String> loadNames(String filePath) {
+        ArrayList<String> names = new ArrayList<>();
+        try (DataInputStream dis = new DataInputStream (new FileInputStream (filePath))) {
+            int count = dis.readInt();
+            for (int i = 0; i < count; i++) {
+                String name = dis.readUTF();
+                names.add(name);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return names;
     }
 }

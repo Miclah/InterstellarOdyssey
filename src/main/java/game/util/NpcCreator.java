@@ -3,10 +3,8 @@ package game.util;
 import game.entity.NPC;
 import game.entity.NormalNPC;
 import game.entity.special.*;
+import game.io.Loader;
 import game.state.GeneralManager;
-
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -22,10 +20,13 @@ public class NpcCreator {
     private static int normalYoungCount = 0;
     private static int normalOldCount = 0;
 
-    private static final List<String> normalNpcNames = new ArrayList<>(Arrays.asList(
-            "Aragorn", "Eowyn", "Thorin", "Galadriel", "Legolas", "Arwen", "Boromir", "Faramir",
-            "Eomer", "Elrond", "Gimli", "Haldir", "Celeborn", "Glorfindel", "Luthien"
-    ));
+    private static final List<String> maleNames;
+    private static final List<String> femaleNames;
+
+    static {
+        maleNames = Loader.loadNames("src/main/resources/textures/files/male_names.bin");
+        femaleNames = Loader.loadNames("src/main/resources/textures/files/female_names.bin");
+    }
 
     public static NPC createRandomNPC(GeneralManager manager, TileManager tileManager) {
         int tileSize = tileManager.getTileSize();
@@ -63,20 +64,20 @@ public class NpcCreator {
         if ((normalYoungCount + normalOldCount) < 0.6 * (normalYoungCount + normalOldCount + 1)) {
             if (random.nextBoolean()) {
                 npcType = "young/" + man;
+                return new NormalNPC(worldX, worldY, getRandomName(maleNames), npcType, manager);
             } else {
                 npcType = "young/" + woman;
+                return new NormalNPC(worldX, worldY, getRandomName(femaleNames), npcType, manager);
             }
-            normalYoungCount++;
         } else {
             if (random.nextBoolean()) {
                 npcType = "old/" + man;
+                return new NormalNPC(worldX, worldY, getRandomName(maleNames), npcType, manager);
             } else {
                 npcType = "old/" + woman;
+                return new NormalNPC(worldX, worldY, getRandomName(femaleNames), npcType, manager);
             }
-            normalOldCount++;
         }
-
-        return new NormalNPC (worldX, worldY, getRandomName(), npcType, manager);
     }
 
     private static boolean isNearLake(int worldX, int worldY, TileManager tileManager, int tileSize) {
@@ -94,11 +95,11 @@ public class NpcCreator {
         return false;
     }
 
-    private static String getRandomName() {
-        if (normalNpcNames.isEmpty()) {
-            throw new RuntimeException("No more names available for normal NPCs");
+    private static String getRandomName(List<String> names) {
+        if (names.isEmpty()) {
+            throw new RuntimeException("No more names available.");
         }
-        int index = random.nextInt(normalNpcNames.size());
-        return normalNpcNames.remove(index);
+        int index = random.nextInt(names.size());
+        return names.remove(index);
     }
 }

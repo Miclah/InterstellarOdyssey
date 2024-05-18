@@ -15,7 +15,8 @@ import java.util.ArrayList;
 
 public abstract class Entity implements Movable {
 
-    private double worldX, worldY;
+    private double worldX;
+    private double worldY;
     private final String name;
     private Label label;
     private Rectangle collisionRectangle;
@@ -78,10 +79,18 @@ public abstract class Entity implements Movable {
             double moveY = 0;
 
             switch (this.direction) {
-                case UP -> moveY = -this.currentSpeed;
-                case DOWN -> moveY = this.currentSpeed;
-                case LEFT -> moveX = -this.currentSpeed;
-                case RIGHT -> moveX = this.currentSpeed;
+                case UP -> {
+                    moveY = -this.currentSpeed;
+                }
+                case DOWN -> {
+                    moveY = this.currentSpeed;
+                }
+                case LEFT -> {
+                    moveX = -this.currentSpeed;
+                }
+                case RIGHT -> {
+                    moveX = this.currentSpeed;
+                }
                 case UP_LEFT -> {
                     moveY = -this.currentSpeed / Math.sqrt(2);
                     moveX = -this.currentSpeed / Math.sqrt(2);

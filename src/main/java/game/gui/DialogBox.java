@@ -13,7 +13,8 @@ import javafx.util.Duration;
 public class DialogBox {
 
     private static boolean isVisible = false;
-    private double worldX, worldY;
+    private double worldX;
+    private double worldY;
     private ImageView imageView;
     private Text text;
 

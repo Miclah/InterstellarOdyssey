@@ -39,10 +39,18 @@ public class KeyManager {
 
         if (!this.paused) {
             switch (event.getCode()) {
-                case W -> this.wDown = true;
-                case A -> this.aDown = true;
-                case S -> this.sDown = true;
-                case D -> this.dDown = true;
+                case W -> {
+                    this.wDown = true;
+                }
+                case A -> {
+                    this.aDown = true;
+                }
+                case S -> {
+                    this.sDown = true;
+                }
+                case D -> {
+                    this.dDown = true;
+                }
             }
             this.updateDirection();
         }
@@ -51,10 +59,18 @@ public class KeyManager {
     public void handleKeyReleased(KeyEvent event) {
         if (!this.paused) {
             switch (event.getCode()) {
-                case W -> this.wDown = false;
-                case A -> this.aDown = false;
-                case S -> this.sDown = false;
-                case D -> this.dDown = false;
+                case W -> {
+                    this.wDown = false;
+                }
+                case A -> {
+                    this.aDown = false;
+                }
+                case S -> {
+                    this.sDown = false;
+                }
+                case D -> {
+                    this.dDown = false;
+                }
             }
             this.updateDirection();
         }
