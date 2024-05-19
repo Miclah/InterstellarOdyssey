@@ -27,16 +27,49 @@ import javafx.stage.StageStyle;
 
 import java.util.ArrayList;
 
+/**
+ * Responsible for creating a shop interface utilized by shopkeepers
+ */
 public class Shop {
+    /**
+     * The Shop stage.
+     */
     private Stage shopStage;
+    /**
+     * The Item container.
+     */
     private TilePane itemContainer;
+    /**
+     * The Currency label.
+     */
     private Label currencyLabel;
+    /**
+     * The Player currency.
+     */
     private int playerCurrency;
+    /**
+     * The Key manager.
+     */
     private final KeyManager keyManager;
+    /**
+     * The constant PATH_TO_FONT.
+     */
     private static final String PATH_TO_FONT = "/fonts/pixel1.ttf";
+    /**
+     * The constant BACKGROUND_COLOR.
+     */
     private static final Color BACKGROUND_COLOR = Color.web ("#fad9c1");
+    /**
+     * The constant INTERIOR_COLOR.
+     */
     private static final Color INTERIOR_COLOR = Color.web ("#f9caa7");
 
+    /**
+     * Instantiates a new Shop.
+     *
+     * @param playerCurrency the player currency
+     * @param keyManager     the key manager
+     */
     public Shop(int playerCurrency, KeyManager keyManager) {
         this.playerCurrency = playerCurrency;
         this.shopStage = new Stage ();
@@ -53,6 +86,9 @@ public class Shop {
         this.setupShopStage ();
     }
 
+    /**
+     * Sets up shop with its contents
+     */
     private void setupShopStage() {
         ScrollPane scrollPane = new ScrollPane ();
         scrollPane.setContent (this.itemContainer);
@@ -85,6 +121,12 @@ public class Shop {
         });
     }
 
+    /**
+     * Once player interacts with a shopkeeper a shop is
+     * displayed with invertory of that shopkeeper
+     *
+     * @param items the items
+     */
     public void displayShop(ArrayList<Thing> items) {
         this.itemContainer.getChildren ().clear ();
         for (Thing item : items) {
@@ -117,6 +159,12 @@ public class Shop {
         this.keyManager.setShopOpen(true);
     }
 
+    /**
+     * When a player hits purchase button creates a new stage for confirming
+     * his purchase and displaying additional information about the item
+     *
+     * @param item the item
+     */
     private void displayPurchaseConfirmation(Thing item) {
         Stage confirmationStage = new Stage ();
         confirmationStage.initModality (Modality.APPLICATION_MODAL);
@@ -144,6 +192,7 @@ public class Shop {
                 this.playerCurrency = newBalance;
                 this.currencyLabel.setText("Currency: " + this.playerCurrency);
                 Player.addInventoryItem((Item)item);
+                Player.subtractCurrency(item.getPrice());
                 confirmationStage.close();
             }
         });
@@ -167,6 +216,12 @@ public class Shop {
         confirmationStage.showAndWait ();
     }
 
+    /**
+     * Creates a new button with specified style, font, size etc.
+     *
+     * @param text the text of the button
+     * @return Stylized button
+     */
     private Button getButton(String text) {
         Button button = new Button (text);
         button.setStyle ("-fx-background-color: rgba(244, 162, 97, 1); -fx-text-fill: white;");
@@ -176,16 +231,31 @@ public class Shop {
         return button;
     }
 
+    /**
+     * Adds an item to the shops container
+     *
+     * @param item the item
+     */
     public void addItem(Thing item) {
         Button itemButton = new Button (item.getName () + " - " + item.getPrice () + " credits");
         itemButton.setOnAction (e -> this.displayPurchaseConfirmation (item));
         this.itemContainer.getChildren ().add (itemButton);
     }
 
+    /**
+     * Removes an item from the shops container
+     *
+     * @param item the item
+     */
     public void removeItem(Thing item) {
         this.itemContainer.getChildren ().removeIf (button -> ((Button)button).getText ().contains (item.getName ()));
     }
 
+    /**
+     * Gets shop stage.
+     *
+     * @return the shop stage
+     */
     public Stage getShopStage() {
         return this.shopStage;
     }

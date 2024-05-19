@@ -1,6 +1,7 @@
 package game.gui;
 
 import game.state.GameManager;
+import game.state.GeneralManager;
 import game.util.MusicPlayer;
 import game.util.Styler;
 import javafx.beans.value.ChangeListener;
@@ -28,20 +29,68 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.function.Consumer;
 
+/**
+ * Custormizor class responsible for character creation.
+ * Allows player to choose a skin from two options
+ * Choose his backstory, traits, name and starting bonuses
+ */
 public class Customizator {
+    /**
+     * The Primary stage.
+     */
     private final Stage primaryStage;
+    /**
+     * The Appereance scene.
+     */
     private Scene appereanceScene;
+    /**
+     * The Player info scene.
+     */
     private Scene playerInfoScene;
+    /**
+     * The Ability info scene.
+     */
     private Scene abilityInfoScene;
+    /**
+     * The Skin choice.
+     */
     private int skinChoice;
+    /**
+     * The Name.
+     */
     private String name;
+    /**
+     * The Trait points.
+     */
     private int traitPoints = 15;
+    /**
+     * The Path to css.
+     */
     private final String pathToCss = "/Styles/Menu/customizer.css";
-    private List<Slider> sliders = new ArrayList<> ();
+    /**
+     * The Sliders.
+     */
+    private final List<Slider> sliders = new ArrayList<> ();
+    /**
+     * The Trait points left.
+     */
     private Label traitPointsLeft;
-    private ChangeListener<Number> traitSliderListener;
-    private MusicPlayer musicPlayer;
+    /**
+     * The Trait slider listener.
+     */
+    private final ChangeListener<Number> traitSliderListener;
+    /**
+     * The Music player.
+     */
+    private final MusicPlayer musicPlayer;
 
+    /**
+     * Instantiates a new Customizator.
+     *
+     * @param primaryStage  the primary stage
+     * @param mainMenuScene the main menu scene
+     * @param musicPlayer   the music player
+     */
     public Customizator(Stage primaryStage, Scene mainMenuScene, MusicPlayer musicPlayer) {
         this.primaryStage = primaryStage;
         this.skinSelector(mainMenuScene);
@@ -49,10 +98,15 @@ public class Customizator {
         this.traitSliderListener = this.createTraitSliderListener();
     }
 
+    /**
+     * Skin selection where player is given a choice between two skins
+     *
+     * @param mainMenuScene the main menu scene
+     */
     private void skinSelector(Scene mainMenuScene) {
         Label appereanceChooser = Styler.createHeaderLabel("Choose appereance: ", "");
-        StackPane skin1 = this.createFrame("Player/Player1/1.png");
-        StackPane skin2 = this.createFrame("Player/Player1/2.png");
+        StackPane skin1 = this.createFrame("textures/player/skin/one/player01.png");
+        StackPane skin2 = this.createFrame("textures/player/skin/two/player01.png");
 
         Button skinChooser1 = new Button("Skin 1");
         Button skinChooser2 = new Button("Skin 2");
@@ -85,9 +139,15 @@ public class Customizator {
         });
     }
 
+    /**
+     * Creates a new frame with image inside
+     *
+     * @param imagePath the image path
+     * @return A stackpane(stack multiple images on top of each oter) which holds the frame and input image
+     */
     private StackPane createFrame(String imagePath) {
         int frameSize = 305;
-        int imageSize = 260;
+        int imageSize = 200;
 
         Image image = new Image(imagePath, imageSize, imageSize, false, false);
         ImageView imageView = Styler.createImageView(image, true);
@@ -101,6 +161,9 @@ public class Customizator {
         return stackPane;
     }
 
+    /**
+     * Player info section which propmts the player for his name, backstory and traits
+     */
     public void playerInfo() {
         Label playerInfoLabel = Styler.createHeaderLabel("Player Info", "");
 
@@ -222,6 +285,9 @@ public class Customizator {
         Styler.setStage(this.primaryStage, this.playerInfoScene);
     }
 
+    /**
+     * Ability section which allows the user the choose one of six starting bonuses
+     */
     public void abilityInfo() {
         Label abilityInfoLabel = Styler.createHeaderLabel("Choose Your Ability", "");
 
@@ -231,7 +297,7 @@ public class Customizator {
         abilitiesGrid.setVgap(15);
 
         List<String> abilityNames = Arrays.asList("Ability 1", "Ability 2", "Ability 3", "Ability 4", "Ability 5", "Ability 6");
-        List<String> abilityImagePaths = Arrays.asList("other/icon.png", "Player/Player1/1.png", "other/frame.png", "other/frame.png", "other/icon.png", "Player/Player1/1.png");
+        List<String> abilityImagePaths = Arrays.asList("other/icon.png", "textures/player/skin/one/player01.png", "other/frame.png", "other/frame.png", "other/icon.png", "textures/player/skin/two/player01.png");
         List<String> abilityBonuses = Arrays.asList("+1 Strength", "+2 Agility", "+3 Intelligence", "+1 Luck", "+2 Charisma", "+1 Strength");
 
         for (int i = 0; i < abilityNames.size(); i++) {
@@ -247,6 +313,7 @@ public class Customizator {
             Button abilityButton = new Button();
             abilityButton.setGraphic(imageView);
             abilityButton.setOnAction(e -> {
+                GeneralManager.setUpPlayer(this.name, this.skinChoice);
                 new GameManager(this.primaryStage, 1);
                 this.musicPlayer.stop();
             });
@@ -274,7 +341,13 @@ public class Customizator {
     }
 
 
-
+    /**
+     * Creates a vbox which holds the traits
+     *
+     * @param traits       the traits
+     * @param spaceBetween the space between
+     * @return Vbox of traits
+     */
     private VBox createTraitsBox(List<String> traits, List<Integer> spaceBetween) {
         VBox traitsBox = new VBox(10);
 
@@ -301,8 +374,12 @@ public class Customizator {
         return traitsBox;
     }
 
+    /**
+     * Create trait slider listener change listener.
+     *
+     * @return the change listener
+     */
     private ChangeListener<Number> createTraitSliderListener() {
-        // TODO: When traitPoints hits 0 the sliders shouldnt move to a higher value
         return (observable, oldValue, newValue) -> {
             int totalSliderValue = this.sliders.stream().mapToInt(slider -> (int)slider.getValue()).sum();
             int usedTraitPoints = totalSliderValue - this.sliders.size();

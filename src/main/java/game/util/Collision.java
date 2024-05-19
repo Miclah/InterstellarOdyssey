@@ -4,16 +4,39 @@ import game.entity.Entity;
 import game.entity.Player;
 import game.state.GeneralManager;
 
+/**
+ * Collision class which is responsible for checking collisions.
+ */
 public class Collision {
+    /**
+     * The Tile size.
+     */
     private final int tileSize = 32;
+    /**
+     * The Manager.
+     */
     private final GeneralManager manager;
+    /**
+     * The Player.
+     */
     private final Player player;
 
+    /**
+     * Instantiates a new Collision.
+     *
+     * @param manager the manager
+     * @param player  the player
+     */
     public Collision(GeneralManager manager, Player player) {
         this.manager = manager;
         this.player = player;
     }
 
+    /**
+     * Checks collision between an entity and a tile, or entity and other entity
+     *
+     * @param entity the entity
+     */
     public void check(Entity entity) {
         entity.setCollision(false);
         this.player.setCollision(false);
@@ -71,12 +94,18 @@ public class Collision {
         for (Entity otherEntity : this.manager.getEntities()) {
             if (otherEntity != entity && this.rectanglesOverlap (entity, otherEntity)) {
                 entity.setCollision(true);
-                System.out.println("Entity: " + entity.getName() + " collides with " + otherEntity.getName());
                 break;
             }
         }
     }
 
+    /**
+     * Calculates whether two separate entitiy's collision rectangles overlap
+     *
+     * @param entity1 the entity 1
+     * @param entity2 the entity 2
+     * @return the boolean
+     */
     private boolean rectanglesOverlap(Entity entity1, Entity entity2) {
         double left1 = entity1.getWorldX() + entity1.getCollisionRectangle().getX();
         double right1 = left1 + entity1.getCollisionRectangle().getWidth();

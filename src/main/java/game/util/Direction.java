@@ -1,5 +1,8 @@
 package game.util;
 
+/**
+ * The enum Direction.
+ */
 public enum Direction {
     UP,
     UP_LEFT,
@@ -10,6 +13,11 @@ public enum Direction {
     LEFT,
     RIGHT;
 
+    /**
+     * Opposite direction.
+     *
+     * @return the direction
+     */
     public Direction opposite() {
         return switch (this) {
             case UP -> DOWN;

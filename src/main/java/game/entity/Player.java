@@ -6,27 +6,65 @@ import game.things.Inventory;
 import game.things.Item;
 import javafx.scene.Scene;
 
+/**
+ * Player class
+ */
 public class Player extends Entity {
 
+    /**
+     * The Screen x.
+     */
     private final double screenX;
+    /**
+     * The Screen y.
+     */
     private final double screenY;
+    /**
+     * The Key manager.
+     */
     private final KeyManager keyManager;
-    private int currency;
+    /**
+     * The Currency.
+     */
+    private static int currency;
+    /**
+     * The Mining speed.
+     */
     private double miningSpeed;
+    /**
+     * The Inventory.
+     */
     private static Inventory<Item> inventory;
 
-    public Player(int worldX, int worldY, int speed, String name, Scene scene, KeyManager keyManager, GeneralManager manager) {
-        super(worldX, worldY, name, "player/skin/player", speed, manager);
+    /**
+     * Instantiates a new Player.
+     *
+     * @param worldX      the world x
+     * @param worldY      the world y
+     * @param speed       the speed
+     * @param name        the name
+     * @param scene       the scene
+     * @param keyManager  the key manager
+     * @param manager     the manager
+     * @param pathToImage the path to image
+     */
+    public Player(int worldX, int worldY, int speed, String name, Scene scene, KeyManager keyManager, GeneralManager manager, String pathToImage) {
+        super(worldX, worldY, name, pathToImage, speed, manager);
         this.screenX = scene.getWidth() / 2 - 32;
         this.screenY = scene.getHeight() / 2 - 32;
         this.keyManager = keyManager;
-        this.currency = 200;
+        currency = 200;
         this.miningSpeed = 1.0;
         inventory = new Inventory<> ();
         scene.setOnKeyPressed(this.keyManager::handleKeyPressed);
         scene.setOnKeyReleased(this.keyManager::handleKeyReleased);
+
     }
 
+    /**
+     * Update method gets called 60x per second to make a player
+     * character move into a specified direction
+     */
     public void update() {
         if (this.keyManager.isMoving() && !this.keyManager.isPaused()) {
             super.setDirection(this.keyManager.getCurrentDirection());
@@ -35,6 +73,10 @@ public class Player extends Entity {
         }
     }
 
+    /**
+     * Overrides method from parent to not check for collisions
+     * with other npcs, moves player into specified direction
+     */
     @Override
     public void move() {
         if (super.getDirection() != null) {
@@ -96,48 +138,95 @@ public class Player extends Entity {
         }
     }
 
+    /**
+     * Gets screen y.
+     *
+     * @return the screen y
+     */
     public double getScreenY() {
         return this.screenY;
     }
 
+    /**
+     * Gets screen x.
+     *
+     * @return the screen x
+     */
     public double getScreenX() {
         return this.screenX;
     }
 
+    /**
+     * Is moving boolean.
+     *
+     * @return the boolean
+     */
     public boolean isMoving() {
         return this.keyManager.isMoving();
     }
 
+    /**
+     * Is paused boolean.
+     *
+     * @return the boolean
+     */
     public boolean isPaused() {
         return this.keyManager.isPaused();
     }
 
+    /**
+     * Gets currency.
+     *
+     * @return the currency
+     */
     public int getCurrency() {
-        return this.currency;
+        return currency;
     }
 
+    /**
+     * Add currency.
+     *
+     * @param amount the amount
+     */
     public void addCurrency(int amount) {
-        this.currency += amount;
+        currency += amount;
     }
 
-    public void subtractCurrency(int amount) {
-        if (amount <= this.currency) {
-            this.currency -= amount;
+    /**
+     * Subtract currency.
+     *
+     * @param amount the amount
+     */
+    public static void subtractCurrency(int amount) {
+        if (amount <= currency) {
+            currency -= amount;
         }
     }
 
+    /**
+     * Gets mining speed.
+     *
+     * @return the mining speed
+     */
     public double getMiningSpeed() {
         return this.miningSpeed;
     }
 
+    /**
+     * Sets mining speed.
+     *
+     * @param miningSpeed the mining speed
+     */
     public void setMiningSpeed(double miningSpeed) {
         this.miningSpeed = miningSpeed;
     }
 
+    /**
+     * Adds an item to the players invetory
+     *
+     * @param item the item
+     */
     public static void addInventoryItem(Item item) {
         inventory.addItem(item);
-        for (Item item1 : inventory.getInventory()) {
-            System.out.println (item1.toString());
-        }
     }
 }

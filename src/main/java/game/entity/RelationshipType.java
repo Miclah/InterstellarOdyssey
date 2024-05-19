@@ -1,5 +1,8 @@
 package game.entity;
 
+/**
+ * The enum Relationship type.
+ */
 public enum RelationshipType {
     HOSTILE(0),
     UNFRIENDLY(25),
@@ -9,10 +12,20 @@ public enum RelationshipType {
 
     private final int value;
 
+    /**
+     * Instantiates a new Relationship type.
+     *
+     * @param value the value
+     */
     RelationshipType(int value) {
         this.value = value;
     }
 
+    /**
+     * Gets value.
+     *
+     * @return the value
+     */
     public int getValue() {
         return this.value;
     }

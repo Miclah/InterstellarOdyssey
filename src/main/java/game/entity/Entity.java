@@ -13,23 +13,79 @@ import javafx.scene.text.Font;
 
 import java.util.ArrayList;
 
+/**
+ * Entity superclass which is the parent of
+ * all living beings in the game
+ */
 public abstract class Entity implements Movable {
 
+    /**
+     * The World x.
+     */
     private double worldX;
+    /**
+     * The World y.
+     */
     private double worldY;
+    /**
+     * The Name.
+     */
     private final String name;
+    /**
+     * The Label(Nametag).
+     */
     private Label label;
+    /**
+     * The Collision rectangle.
+     */
     private Rectangle collisionRectangle;
+    /**
+     * The Frames(Images).
+     */
     private ArrayList<Image> frames;
+    /**
+     * The Current frame.
+     */
     private ImageView currentFrame;
+    /**
+     * The Direction.
+     */
     private Direction direction;
+    /**
+     * The Collision.
+     */
     private boolean collision;
+    /**
+     * The Base speed.
+     */
     private final int baseSpeed;
+    /**
+     * The Manager.
+     */
     private final GeneralManager manager;
+    /**
+     * The Current speed.
+     */
     private double currentSpeed;
+    /**
+     * The Sprite counter.
+     */
     private double spriteCounter;
+    /**
+     * The Sprite number.
+     */
     private int spriteNumber;
 
+    /**
+     * Instantiates a new Entity.
+     *
+     * @param worldX      the world x
+     * @param worldY      the world y
+     * @param name        the name
+     * @param pathToImage the path to image
+     * @param baseSpeed   the base speed
+     * @param manager     the manager
+     */
     public Entity(int worldX, int worldY, String name, String pathToImage, int baseSpeed, GeneralManager manager) {
         this.worldX = worldX;
         this.worldY = worldY;
@@ -44,6 +100,9 @@ public abstract class Entity implements Movable {
         this.collisionRectangle = new Rectangle(22, 32, 22, 32);
     }
 
+    /**
+     * Creates a nameTag that will be displayed above player
+     */
     public void createLabel() {
         this.label = new Label(this.name);
         this.label.setTextFill(Color.WHITE);
@@ -54,10 +113,21 @@ public abstract class Entity implements Movable {
 
     }
 
+    /**
+     * Gets label.
+     *
+     * @return the label
+     */
     public Label getLabel() {
         return this.label;
     }
 
+    /**
+     * Updates labels position so that it always stays above npc
+     *
+     * @param entityX the entity x
+     * @param entityY the entity y
+     */
     public void updateLabelPosition(double entityX, double entityY) {
         double labelWidth = this.label.getBoundsInLocal().getWidth();
         double labelHeight = this.label.getBoundsInLocal().getHeight();
@@ -70,6 +140,11 @@ public abstract class Entity implements Movable {
         this.label.setLayoutY(entityY - labelHeight);
     }
 
+    /**
+     * Makes an entity move to a specified direction,
+     * also responsible for changing frames creating a
+     * walking animation and checking collisions.
+     */
     @Override
     public void move() {
         if (this.direction != null) {
@@ -135,6 +210,9 @@ public abstract class Entity implements Movable {
     }
 
 
+    /**
+     * Changes frames(Images) to create a walking animation
+     */
     public void changeFrame() {
         if (this.direction == null) {
             return;
@@ -171,98 +249,182 @@ public abstract class Entity implements Movable {
         }
     }
 
+    /**
+     * Sets world x.
+     *
+     * @param worldX the world x
+     */
     public void setWorldX(double worldX) {
         this.worldX = worldX;
     }
 
+    /**
+     * Sets world y.
+     *
+     * @param worldY the world y
+     */
     public void setWorldY(double worldY) {
         this.worldY = worldY;
     }
 
+    /**
+     * Gets world x.
+     *
+     * @return the world x
+     */
     public double getWorldX() {
         return this.worldX;
     }
 
+    /**
+     * Gets world y.
+     *
+     * @return the world y
+     */
     public double getWorldY() {
         return this.worldY;
     }
 
+    /**
+     * Gets collision rectangle.
+     *
+     * @return the collision rectangle
+     */
     public Rectangle getCollisionRectangle() {
         return this.collisionRectangle;
     }
 
-    public ArrayList<Image> getFrames() {
-        return this.frames;
-    }
-
-    public void setCollisionRectangle(Rectangle collisionRectangle) {
-        this.collisionRectangle = collisionRectangle;
-    }
-
+    /**
+     * Gets current frame.
+     *
+     * @return the current frame
+     */
     public ImageView getCurrentFrame() {
         return this.currentFrame;
     }
 
+    /**
+     * Gets name of the entity.
+     *
+     * @return the name
+     */
     public String getName() {
         return this.name;
     }
 
-    public void setCurrentFrame(ImageView currentFrame) {
-        this.currentFrame = currentFrame;
-    }
-
+    /**
+     * Change image.
+     *
+     * @param imageToChangeTo the image to change to
+     */
     public void changeImage(Image imageToChangeTo) {
         this.currentFrame.setImage(imageToChangeTo);
     }
 
-    public Image getCurrentFrameImage() {
-        return this.currentFrame.getImage();
-    }
-
+    /**
+     * Gets direction.
+     *
+     * @return the direction
+     */
     public Direction getDirection() {
         return this.direction;
     }
 
+    /**
+     * Sets direction.
+     *
+     * @param direction the direction
+     */
     public void setDirection(Direction direction) {
         this.direction = direction;
     }
 
+    /**
+     * Is collision boolean.
+     *
+     * @return the boolean
+     */
     public boolean isCollision() {
         return this.collision;
     }
 
+    /**
+     * Sets collision.
+     *
+     * @param collision the collision
+     */
     public void setCollision(boolean collision) {
         this.collision = collision;
     }
 
+    /**
+     * Gets base speed.
+     *
+     * @return the base speed
+     */
     public int getBaseSpeed() {
         return this.baseSpeed;
     }
 
+    /**
+     * Gets manager.
+     *
+     * @return the manager
+     */
     public GeneralManager getManager() {
         return this.manager;
     }
 
+    /**
+     * Gets current speed.
+     *
+     * @return the current speed
+     */
     public double getCurrentSpeed() {
         return this.currentSpeed;
     }
 
+    /**
+     * Gets sprite counter.
+     *
+     * @return the sprite counter
+     */
     public double getSpriteCounter() {
         return this.spriteCounter;
     }
 
+    /**
+     * Gets sprite number.
+     *
+     * @return the sprite number
+     */
     public int getSpriteNumber() {
         return this.spriteNumber;
     }
 
+    /**
+     * Sets current speed.
+     *
+     * @param currentSpeed the current speed
+     */
     public void setCurrentSpeed(double currentSpeed) {
         this.currentSpeed = currentSpeed;
     }
 
+    /**
+     * Sets sprite counter.
+     *
+     * @param spriteCounter the sprite counter
+     */
     public void setSpriteCounter(double spriteCounter) {
         this.spriteCounter = spriteCounter;
     }
 
+    /**
+     * Sets sprite number.
+     *
+     * @param spriteNumber the sprite number
+     */
     public void setSpriteNumber(int spriteNumber) {
         this.spriteNumber = spriteNumber;
     }

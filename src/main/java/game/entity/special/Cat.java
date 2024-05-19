@@ -9,12 +9,28 @@ import javafx.scene.layout.Pane;
 
 import java.util.Random;
 
+/**
+ * Cat class who is a special NPC because it
+ * runs away from the player once he is in close proximity
+ */
 public class Cat extends NPC {
 
+    /**
+     * Instantiates a new Cat.
+     *
+     * @param worldX  the world x
+     * @param worldY  the world y
+     * @param name    the name
+     * @param manager the manager
+     */
     public Cat(int worldX, int worldY, String name, GeneralManager manager) {
         super(worldX, worldY, name, "npc/general/cat" + Cat.getRandomCatImagePath(), "GENERAL", 50, 1   , manager);
     }
 
+    /**
+     * Makes cat wonder around similliar to normal NPCs,
+     * but when a playetr gets too close it starts to run away
+     */
     @Override
     public void wander() {
         Player player = super.getManager().getPlayer();
@@ -50,6 +66,12 @@ public class Cat extends NPC {
         }
     }
 
+    /**
+     * Based on a percentual chance of 70/30 creates either
+     * an orange or a white cat
+     *
+     * @return the random cat image path
+     */
     public static String getRandomCatImagePath() {
         Random random = new Random();
         double chance = random.nextDouble();
@@ -60,6 +82,14 @@ public class Cat extends NPC {
         }
     }
 
+    /**
+     * Makes a change to the talk method from parent,
+     * changes its speechBubble image to smaller
+     * and modifies its location to fit a smaller image(cat)
+     *
+     * @param pane   the pane
+     * @param player the player
+     */
     @Override
     public void talk(Pane pane, Player player) {
         double npcScreenX = super.getWorldX() - player.getWorldX() + player.getScreenX();
@@ -71,6 +101,12 @@ public class Cat extends NPC {
         super.getDialogBox().setCoordinatesAnimals(npcScreenX, npcScreenY);
     }
 
+    /**
+     * Overrides the method to just return Meow,
+     * since cats cant talk
+     *
+     * @return the message
+     */
     @Override
     public String getMessage() {
         return "Meow";

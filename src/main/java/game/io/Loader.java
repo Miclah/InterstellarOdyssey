@@ -14,8 +14,17 @@ import java.util.HashMap;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+/**
+ * Loader class which loads images from files
+ */
 public class Loader {
 
+    /**
+     * Load images array list.
+     *
+     * @param filePath the file path
+     * @return ArrayList of images
+     */
     public static ArrayList<Image> loadImages(String filePath) {
         ArrayList<Image> frames = new ArrayList<> ();
         for (int i = 0; i < 12; i++) {
@@ -26,6 +35,30 @@ public class Loader {
         return frames;
     }
 
+    /**
+     * Load images array list.
+     *
+     * @param filePath       the file path
+     * @param numberOfImages the number of images
+     * @return ArrayList of images
+     */
+    public static ArrayList<Image> loadImages(String filePath, int numberOfImages) {
+        ArrayList<Image> frames = new ArrayList<> ();
+        for (int i = 0; i < numberOfImages; i++) {
+            String filename = String.format ("/textures/" + filePath + "%02d.png", i);
+            Image image = new Image (filename);
+            frames.add (image);
+        }
+        return frames;
+    }
+
+    /**
+     * Load dialogues hash map.
+     *
+     * @param filePath the file path
+     * @param npcType  the npc type
+     * @return the hash map of dialogues specified with relationtype and the actual dialog stores inside an arraylist
+     */
     public static HashMap<RelationshipType, ArrayList<String>> loadDialogues(String filePath, String npcType) {
         try {
             String fileContent = Files.readString(Paths.get(filePath));
@@ -48,6 +81,12 @@ public class Loader {
         }
     }
 
+    /**
+     * Loads names from a binary file
+     *
+     * @param filePath the file path
+     * @return An arralist of String names
+     */
     public static ArrayList<String> loadNames(String filePath) {
         ArrayList<String> names = new ArrayList<>();
         try (DataInputStream dis = new DataInputStream (new FileInputStream (filePath))) {

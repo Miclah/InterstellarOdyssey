@@ -21,21 +21,55 @@ import javafx.util.Duration;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+/**
+ * Menu class which creates mainMenu and submenus,
+ * also responsible for starting the game
+ */
 public class Menu {
+    /**
+     * The Primary stage.
+     */
     private Stage primaryStage;
+    /**
+     * The Transition played.
+     */
     private boolean transitionPlayed;
+    /**
+     * The Main menu scene.
+     */
     private Scene mainMenuScene;
+    /**
+     * The Options scene.
+     */
     private Scene optionsScene;
+    /**
+     * The About scene.
+     */
     private Scene aboutScene;
+    /**
+     * The Settings scene.
+     */
     private Scene settingsScene;
+    /**
+     * The Path to css.
+     */
     private final String pathToCss = "/Styles/Menu/menu.css";
 
+    /**
+     * Instantiates a new Menu.
+     *
+     * @param primaryStage the primary stage
+     */
     public Menu(Stage primaryStage) {
         this.primaryStage = primaryStage;
         this.displayMain();
         this.transitionPlayed = true;
     }
 
+    /**
+     * Displays main menu with 3 buttons:
+     * Start, Settings(takes us to settings menu), Exit(closes the application)
+     */
     private void displayMain() {
         Image icon = new Image("file:src/main/resources/other/icon.png");
         this.primaryStage.getIcons().add(icon);
@@ -71,6 +105,9 @@ public class Menu {
         }
     }
 
+    /**
+     * Displays options, a submenu of settings.
+     */
     private void displayOptions() {
         ArrayList<String> names = new ArrayList<>();
         names.add("Settings");
@@ -88,6 +125,9 @@ public class Menu {
         this.primaryStage.setScene(this.optionsScene);
     }
 
+    /**
+     * Displays information about the game, what its purpose is etc.
+     */
     private void displayAbout() {
         ArrayList<String> name = new ArrayList<>();
         name.add("Back");
@@ -155,6 +195,9 @@ public class Menu {
         this.primaryStage.setScene(this.aboutScene);
     }
 
+    /**
+     * Displays settings such as music volume...
+     */
     private void displaySettings() {
         ArrayList<Button> back = new ArrayList<>();
         back.add(new Button("Back"));
