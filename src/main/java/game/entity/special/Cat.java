@@ -53,7 +53,6 @@ public class Cat extends NPC {
     public static String getRandomCatImagePath() {
         Random random = new Random();
         double chance = random.nextDouble();
-        System.out.println (chance);
         if (chance <= 0.3) {
             return "/white/cat";
         } else {

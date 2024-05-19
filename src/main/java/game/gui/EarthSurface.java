@@ -43,34 +43,37 @@ public class EarthSurface {
     private static final String FONT_PATH = "/fonts/pixel1.ttf";
     private static final int PAUSE_FONT_SIZE = 200;
     private static final int INTERACTION_FONT_SIZE = 30;
+    private boolean inShop;
+    private final GeneralManager manager;
 
     public EarthSurface(Stage primaryStage) {
         this.primaryStage = primaryStage;
         this.keyManager = new KeyManager();
         this.pane = new Pane();
-        GeneralManager manager = new GeneralManager();
-        this.initializeTileManager (manager);
+        this.manager = new GeneralManager();
+        this.manager.setKeyManager(this.keyManager);
+        this.initializeTileManager();
         this.canvas = new Canvas(CANVAS_WIDTH, CANVAS_HEIGHT);
         this.pane.getChildren().add(this.canvas);
         this.npcs = new ArrayList<>();
         this.setupGraphicsContext ();
         this.scene = new Scene(this.pane, CANVAS_WIDTH, CANVAS_HEIGHT);
-        this.player = new Player(this.tileManager.getTileSize() * TILE_SIZE_MULTIPLIER, this.tileManager.getTileSize() * TILE_SIZE_MULTIPLIER, 5, "Janko", this.scene, this.keyManager, manager);
-        this.setupPlayer (manager);
-        this.setupNPCs (manager);
+        this.player = new Player(this.tileManager.getTileSize() * TILE_SIZE_MULTIPLIER, this.tileManager.getTileSize() * TILE_SIZE_MULTIPLIER, 5, "Janko", this.scene, this.keyManager, this.manager);
+        this.setupPlayer();
         this.createInteractionLabel();
         this.pane.getChildren().add(this.interactionPrompt);
         GraphicsContext gc = this.canvas.getGraphicsContext2D();
         this.tileManager.draw(gc, this.player, this.npcs);
+        this.setupNPCs();
         primaryStage.setScene(this.scene);
         primaryStage.centerOnScreen();
         primaryStage.show();
         this.startGameLoop(gc);
     }
 
-    private void initializeTileManager(GeneralManager manager) {
-        manager.createTileManger();
-        this.tileManager = manager.getTileManager();
+    private void initializeTileManager() {
+        this.manager.createTileManger();
+        this.tileManager = this.manager.getTileManager();
     }
 
     private void setupGraphicsContext() {
@@ -78,21 +81,21 @@ public class EarthSurface {
         gc.clearRect(0, 0, this.canvas.getWidth(), this.canvas.getHeight());
     }
 
-    private void setupPlayer(GeneralManager manager) {
+    private void setupPlayer() {
         this.pane.getChildren().addAll(this.player.getCurrentFrame(), this.player.getLabel());
         this.player.getCurrentFrame().setTranslateX(this.player.getScreenX());
         this.player.getCurrentFrame().setTranslateY(this.player.getScreenY());
-        manager.createCollision(this.player);
+        this.manager.createCollision(this.player);
     }
 
-    private void setupNPCs(GeneralManager manager) {
-        this.npcs.add(new GeneralShopKeeper(49 * this.tileManager.getTileSize(), 49 * this.tileManager.getTileSize(), manager));
-        this.npcs.add(new Cat(47 * this.tileManager.getTileSize(), 47 * this.tileManager.getTileSize(), "Optimus Prime", manager));
-        this.npcs.add(new Cat(52 * this.tileManager.getTileSize(), 52 * this.tileManager.getTileSize(), "Crack Sparrow", manager));
-        this.npcs.add(new Cat(54 * this.tileManager.getTileSize(), 54 * this.tileManager.getTileSize(), "Godzilla", manager));
+    private void setupNPCs() {
+        this.npcs.add(new GeneralShopKeeper(49 * this.tileManager.getTileSize(), 49 * this.tileManager.getTileSize(), this.manager));
+        this.npcs.add(new Cat(47 * this.tileManager.getTileSize(), 47 * this.tileManager.getTileSize(), "Optimus Prime", this.manager));
+        this.npcs.add(new Cat(52 * this.tileManager.getTileSize(), 52 * this.tileManager.getTileSize(), "Crack Sparrow", this.manager));
+        this.npcs.add(new Cat(54 * this.tileManager.getTileSize(), 54 * this.tileManager.getTileSize(), "Godzilla", this.manager));
 
         for (int i = 0; i < NUMBER_OF_NPCS; i++) {
-            NPC npc = NpcCreator.createRandomNPC(manager, this.tileManager);
+            NPC npc = NpcCreator.createRandomNPC(this.manager, this.tileManager);
             this.npcs.add(npc);
         }
 
@@ -101,14 +104,16 @@ public class EarthSurface {
                 this.pane.getChildren().add(shopKeeper.getInteractionCircle());
             }
             this.pane.getChildren().addAll(npc.getCurrentFrame(), npc.getLabel());
-            manager.addEntity(npc);
+            this.manager.addEntity(npc);
         }
     }
 
     private void startGameLoop(GraphicsContext gc) {
         Timeline gameLoop = new Timeline(new KeyFrame(Duration.seconds(1.0 / 60), e -> {
-            if (!this.keyManager.isPaused()) {
+            if (this.pauseText != null) {
                 this.hidePauseMessage();
+            }
+            if (!this.keyManager.isPaused() && !this.keyManager.isShopOpen()) {
                 this.player.update();
                 this.player.updateLabelPosition(this.player.getScreenX(), this.player.getScreenY());
                 gc.clearRect(0, 0, this.canvas.getWidth(), this.canvas.getHeight());
@@ -124,6 +129,12 @@ public class EarthSurface {
                             if (this.playerIsInInteractionZone(shopKeeper, this.player)) {
                                 shopKeeper.showZone(this.canvas, this.player);
                                 this.interactionPrompt.setVisible(true);
+                                if (this.keyManager.isInteracted()) {
+                                    this.interactionPrompt.setVisible(false);
+                                    this.keyManager.setPaused(true);
+                                    this.inShop = true;
+                                    shopKeeper.interact();
+                                }
                             } else {
                                 shopKeeper.getInteractionCircle().setVisible(false);
                                 this.interactionPrompt.setVisible(false);
@@ -132,6 +143,12 @@ public class EarthSurface {
                     } else {
                         npc.resetTalk();
                     }
+                }
+            } else if (this.inShop) {
+                if (!this.keyManager.isShopOpen()) {
+                    this.keyManager.setPaused(false);
+                    this.keyManager.setShopOpen(false);
+                    this.keyManager.setInteracted(false);
                 }
             } else {
                 this.displayPausedMessage();
@@ -147,7 +164,7 @@ public class EarthSurface {
             this.pauseText = new Label("Paused");
             this.pauseText.setAlignment(Pos.CENTER);
             this.pauseText.setTextFill(Color.WHITE);
-            Font customFont = Font.loadFont(this.getClass ().getResourceAsStream("/fonts/pixel1.ttf"), 200);
+            Font customFont = Font.loadFont(this.getClass ().getResourceAsStream(FONT_PATH), PAUSE_FONT_SIZE);
             this.pauseText.setFont(customFont);
             this.pauseText.setStyle("-fx-background-color: transparent; -fx-padding: 20px;");
             this.pauseText.setTranslateX(this.scene.getWidth() / 4);
@@ -157,10 +174,8 @@ public class EarthSurface {
     }
 
     private void hidePauseMessage() {
-        if (this.pauseText != null) {
-            this.pane.getChildren().remove(this.pauseText);
-            this.pauseText = null;
-        }
+        this.pane.getChildren().remove(this.pauseText);
+        this.pauseText = null;
     }
 
     private boolean npcIsInPlayerView(NPC npc, Player player) {
@@ -187,7 +202,7 @@ public class EarthSurface {
     private void createInteractionLabel() {
         this.interactionPrompt = new Label("Press SPACE to interact");
         this.interactionPrompt.setTextFill(Color.WHITE);
-        Font customFont = Font.loadFont(this.getClass ().getResourceAsStream("/fonts/pixel1.ttf"), 30);
+        Font customFont = Font.loadFont(this.getClass ().getResourceAsStream(FONT_PATH), INTERACTION_FONT_SIZE);
         this.interactionPrompt.setFont(customFont);
         this.interactionPrompt.setAlignment(Pos.CENTER);
         this.interactionPrompt.setPrefWidth(this.scene.getWidth());

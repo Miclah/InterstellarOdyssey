@@ -4,6 +4,6 @@ import game.things.Item;
 
 public class ColonyStarterKit extends Item {
     public ColonyStarterKit() {
-        super("Colony Starter Kit", "Establish a new colony on a discovered planet.", 400);
+        super("Colony Starter Kit", "Establish a new colony on a discovered planet.", 400, "textures/things/items/colony.png");
     }
 }

@@ -12,6 +12,7 @@ public class GeneralManager {
     private Collision collision;
     private ArrayList<Entity> entities = new ArrayList<> ();
     private Player player;
+    private KeyManager keyManager;
 
     public void createTileManger() {
         this.tileManager = new TileManager ();
@@ -29,6 +30,10 @@ public class GeneralManager {
         this.entities.add(entity);
     }
 
+    public void setKeyManager(KeyManager keyManager) {
+        this.keyManager = keyManager;
+    }
+
     public ArrayList<Entity> getEntities() {
         return new ArrayList<>(this.entities);
     }
@@ -40,5 +45,9 @@ public class GeneralManager {
 
     public Player getPlayer() {
         return this.player;
+    }
+
+    public KeyManager getKeyManager() {
+        return this.keyManager;
     }
 }

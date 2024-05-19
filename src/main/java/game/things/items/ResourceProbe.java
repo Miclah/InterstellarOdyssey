@@ -4,6 +4,6 @@ import game.things.Item;
 
 public class ResourceProbe extends Item {
     public ResourceProbe() {
-        super("Resource probe", "Deploy a probe to gather data on planetary resources.", 2500);
+        super("Resource probe", "Deploy a probe to gather data on planetary resources.", 2500, "textures/things/items/resource_probe.png");
     }
 }

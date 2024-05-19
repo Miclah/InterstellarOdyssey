@@ -1,8 +1,9 @@
 package game.entity;
 
 import game.entity.interfazy.Interactible;
+import game.gui.Shop;
 import game.state.GeneralManager;
-import game.things.ShopInventory;
+import game.things.Inventory;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
@@ -14,15 +15,18 @@ public abstract class ShopKeeper extends NPC implements Interactible {
 
     private double discount;
     private boolean sale;
-    private ShopInventory inventory;
+    private Inventory inventory;
     private Circle interactionCircle;
+    private Shop shop;
 
     public ShopKeeper(int worldX, int worldY, String name, String pathToImage, int relation, GeneralManager manager) {
         super(worldX, worldY, name, pathToImage, "SHOPKEEPER", relation, 1, manager);
         this.discount = 0;
         this.sale = false;
-        this.inventory = new ShopInventory();
+        this.inventory = new Inventory ();
+        this.shop = new Shop(manager.getPlayer().getCurrency(), manager.getKeyManager());
         this.createInteractionCircle();
+        this.initializeShop();
     }
 
     public double getDiscount() {
@@ -80,11 +84,17 @@ public abstract class ShopKeeper extends NPC implements Interactible {
     }
 
     @Override
-    public void interact(Canvas canvas, Player player) {
-
+    public void interact() {
+        this.shop.displayShop(this.inventory.getInventory());
     }
 
     public Circle getInteractionCircle() {
         return this.interactionCircle;
     }
+
+    public Inventory getInventory() {
+        return this.inventory;
+    }
+
+    public abstract void initializeShop();
 }

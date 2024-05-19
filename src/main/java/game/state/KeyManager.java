@@ -13,6 +13,7 @@ public class KeyManager {
     private boolean aDown;
     private boolean sDown;
     private boolean dDown;
+    private boolean shopOpen;
 
     public KeyManager() {
         this.currentDirection = Direction.DOWN;
@@ -23,6 +24,7 @@ public class KeyManager {
         this.aDown = false;
         this.sDown = false;
         this.dDown = false;
+        this.shopOpen = false;
     }
 
     public void handleKeyPressed(KeyEvent event) {
@@ -33,8 +35,11 @@ public class KeyManager {
 
         if (event.getCode() == KeyCode.SPACE) {
             this.interacted = !this.interacted;
-            System.out.println ("Interacted: " + this.interacted);
             return;
+        }
+
+        if (event.getCode() == KeyCode.ESCAPE) {
+            this.shopOpen = false;
         }
 
         if (!this.paused) {
@@ -110,11 +115,27 @@ public class KeyManager {
         return this.paused;
     }
 
+    public void setPaused(boolean paused) {
+        this.paused = paused;
+    }
+
     public boolean isMoving() {
         return this.isMoving;
     }
 
     public void setInteracted(boolean interacted) {
         this.interacted = interacted;
+    }
+
+    public boolean isInteracted() {
+        return this.interacted;
+    }
+
+    public boolean isShopOpen() {
+        return this.shopOpen;
+    }
+
+    public void setShopOpen(boolean shopOpen) {
+        this.shopOpen = shopOpen;
     }
 }

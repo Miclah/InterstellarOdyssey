@@ -45,6 +45,5 @@
 }
 
 .scroll-bar:vertical .thumb {
-    /*-fx-background-color: #90EE90;*/
     -fx-background-color: linear-gradient(to bottom, #3CB371, #4169E1);
 }

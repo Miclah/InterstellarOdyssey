@@ -2,6 +2,8 @@ package game.entity;
 
 import game.state.GeneralManager;
 import game.state.KeyManager;
+import game.things.Inventory;
+import game.things.Item;
 import javafx.scene.Scene;
 
 public class Player extends Entity {
@@ -11,14 +13,16 @@ public class Player extends Entity {
     private final KeyManager keyManager;
     private int currency;
     private double miningSpeed;
+    private static Inventory<Item> inventory;
 
     public Player(int worldX, int worldY, int speed, String name, Scene scene, KeyManager keyManager, GeneralManager manager) {
         super(worldX, worldY, name, "player/skin/player", speed, manager);
         this.screenX = scene.getWidth() / 2 - 32;
         this.screenY = scene.getHeight() / 2 - 32;
         this.keyManager = keyManager;
-        this.currency = 0;
+        this.currency = 200;
         this.miningSpeed = 1.0;
+        inventory = new Inventory<> ();
         scene.setOnKeyPressed(this.keyManager::handleKeyPressed);
         scene.setOnKeyReleased(this.keyManager::handleKeyReleased);
     }
@@ -128,5 +132,12 @@ public class Player extends Entity {
 
     public void setMiningSpeed(double miningSpeed) {
         this.miningSpeed = miningSpeed;
+    }
+
+    public static void addInventoryItem(Item item) {
+        inventory.addItem(item);
+        for (Item item1 : inventory.getInventory()) {
+            System.out.println (item1.toString());
+        }
     }
 }

@@ -6,7 +6,7 @@ public class NanobotRepairSystem extends Item {
     private double repairRate;
 
     public NanobotRepairSystem() {
-        super("Nanobot repair system", "Self-repair your equipment with advanced nanobots.", 1500);
+        super("Nanobot repair system", "Self-repair your equipment with advanced nanobots.", 1500, "textures/things/items/nanobot.png");
         this.repairRate = 1.0;
     }
 

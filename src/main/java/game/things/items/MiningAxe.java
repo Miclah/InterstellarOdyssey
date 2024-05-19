@@ -7,7 +7,7 @@ public class MiningAxe extends Item {
     private double durability;
 
     public MiningAxe() {
-        super("Mining axe", "Allows you to mine resources", 50);
+        super("Mining axe", "Allows you to mine resources", 50, "textures/things/items/pickaxe.png");
         this.miningSpeed = 1.0;
         this.durability = 100.0;
     }

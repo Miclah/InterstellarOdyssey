@@ -6,7 +6,7 @@ public class ResourceExtractor extends Item {
     private double radius;
 
     public ResourceExtractor() {
-        super("Resource Extractor", "Automatically gather nearby resources while mining.", 1100);
+        super("Resource Extractor", "Automatically gather nearby resources while mining.", 1100, "textures/things/items/resource_extractor.png");
         this.radius = 5.0;
     }
 
